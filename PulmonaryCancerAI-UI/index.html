@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulmonary Cancer AI Login</title>
+  <!-- FontAwesome for icons (if needed) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      overflow: hidden;
+      background: #111;
+      font-family: 'Roboto', sans-serif;
+    }
+    /* Background Section with Shooting Star Animation */
+    section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url("https://i.postimg.cc/c1Q3njM0/bg2.jpg");
+      background-size: cover;
+      animation: animateBg 50s linear infinite;
+    }
+    @keyframes animateBg {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+    }
+    section span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.1),
+                  0 0 0 8px rgba(255,255,255,0.1),
+                  0 0 20px rgba(255,255,255,0.1);
+      animation: animate 3s linear infinite;
+    }
+    section span::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 300px;
+      height: 1px;
+      background: linear-gradient(90deg, #fff, transparent);
+    }
+    @keyframes animate {
+      0% {
+        transform: rotate(315deg) translateX(0);
+        opacity: 1;
+      }
+      70% {
+        opacity: 1;
+      }
+      100% {
+        transform: rotate(315deg) translateX(-1000px);
+        opacity: 0;
+      }
+    }
+    /* Position each star individually */
+    section span:nth-child(1) {
+      top: 0;
+      right: 0;
+      left: initial;
+      animation-delay: 0s;
+      animation-duration: 1s;
+    }
+    section span:nth-child(2) {
+      top: 0;
+      right: 80px;
+      left: initial;
+      animation-delay: 0.2s;
+      animation-duration: 3s;
+    }
+    section span:nth-child(3) {
+      top: 80px;
+      right: 0;
+      left: initial;
+      animation-delay: 0.4s;
+      animation-duration: 2s;
+    }
+    section span:nth-child(4) {
+      top: 0;
+      right: 180px;
+      left: initial;
+      animation-delay: 0.6s;
+      animation-duration: 1.5s;
+    }
+    section span:nth-child(5) {
+      top: 0;
+      right: 400px;
+      left: initial;
+      animation-delay: 0.8s;
+      animation-duration: 2.5s;
+    }
+    section span:nth-child(6) {
+      top: 0;
+      right: 600px;
+      left: initial;
+      animation-delay: 1s;
+      animation-duration: 3s;
+    }
+    section span:nth-child(7) {
+      top: 300px;
+      right: 0;
+      left: initial;
+      animation-delay: 1.2s;
+      animation-duration: 1.75s;
+    }
+    section span:nth-child(8) {
+      top: 0;
+      right: 700px;
+      left: initial;
+      animation-delay: 1.4s;
+      animation-duration: 1.25s;
+    }
+    section span:nth-child(9) {
+      top: 0;
+      right: 1000px;
+      left: initial;
+      animation-delay: 0.75s;
+      animation-duration: 2.25s;
+    }
+    section span:nth-child(10) {
+      top: 0;
+      right: 450px;
+      left: initial;
+      animation-delay: 2.75s;
+      animation-duration: 2.75s;
+    }
+    /* Login Container (overlay) */
+    .login-container {
+      position: relative;
+      z-index: 2; /* Ensure it's above the animated background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 40px;
+      width: 360px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      -webkit-backdrop-filter: blur(8px); /* Safari/iOS support */
+      backdrop-filter: blur(8px);
+      color: #fff;
+    }
+    .login-box h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .login-box p {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 14px;
+      color: #aaa;
+    }
+    .login-box form {
+      display: flex;
+      flex-direction: column;
+    }
+    .login-box label {
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #ddd;
+    }
+    .login-box input {
+      padding: 12px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: background 0.3s ease;
+    }
+    .login-box input:focus {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .login-box button {
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #00aaff;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .login-box button:hover {
+      background: #0088cc;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Section with Shooting Star Animation -->
+  <section>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </section>
+  
+  <!-- Login Form Overlay -->
+  <div class="login-container">
+    <div class="login-box">
+      <h1>Pulmonary Cancer AI</h1>
+      <p>Innovative Detection for a Healthier Future</p>
+      <form action="/login" method="POST">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Username" required>
+  
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+  
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

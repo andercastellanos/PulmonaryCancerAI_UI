@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lung Cancer AI - Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0D47A1, #1976D2);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+    
+    /* Header */
+    .admin-header {
+      background: #fff;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .admin-title {
+      color: #0D47A1;
+      font-size: 24px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .logout-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .logout-btn:hover {
+      background: #d32f2f;
+    }
+    
+    /* Main content */
+    .admin-content {
+      padding: 30px;
+    }
+    
+    .admin-section {
+      margin-bottom: 30px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .admin-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .section-title {
+      color: #0D47A1;
+      font-size: 20px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-icon {
+      color: #1976D2;
+    }
+    
+    /* Statistics Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1976D2;
+      margin: 10px 0;
+    }
+    
+    /* User Search */
+    .search-container {
+      display: flex;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    
+    .search-input {
+      flex-grow: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .search-btn {
+      background: #1976D2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .search-btn:hover {
+      background: #1565C0;
+    }
+    
+    /* Users Table */
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    .users-table th, 
+    .users-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    
+    .users-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    
+    .users-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .users-table tr:hover {
+      background-color: #f1f1f1;
+    }
+    
+    /* Action Buttons */
+    .action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+      margin-right: 5px;
+    }
+    
+    .edit-btn {
+      background: #FFC107;
+      color: #333;
+    }
+    
+    .edit-btn:hover {
+      background: #FFA000;
+    }
+    
+    .remove-btn {
+      background: #F44336;
+      color: white;
+    }
+    
+    .remove-btn:hover {
+      background: #D32F2F;
+    }
+    
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .pagination-btn {
+      background: #e0e0e0;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .pagination-btn:hover {
+      background: #d0d0d0;
+    }
+    
+    /* System Actions */
+    .system-actions {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .system-btn {
+      background: #1976D2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .system-btn:hover {
+      background: #1565C0;
+    }
+    
+    .restart-btn {
+      background: #FF9800;
+    }
+    
+    .restart-btn:hover {
+      background: #F57C00;
+    }
+    
+    .backup-btn {
+      background: #4CAF50;
+    }
+    
+    .backup-btn:hover {
+      background: #388E3C;
+    }
+    
+    .logs-btn {
+      background: #9C27B0;
+    }
+    
+    .logs-btn:hover {
+      background: #7B1FA2;
+    }
+    
+    /* Footer */
+    .admin-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f5f5f5;
+      padding: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .back-btn {
+      background: #f5f5f5;
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    
+    .back-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .admin-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+      
+      .header-actions {
+        width: 100%;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .users-table {
+        display: block;
+        overflow-x: auto;
+      }
+      
+      .system-actions {
+        flex-direction: column;
+      }
+      
+      .system-btn {
+        width: 100%;
+      }
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0D47A1;
+    }
+    
+    .close-modal {
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .close-modal:hover {
+      color: #333;
+    }
+    
+    .modal-body {
+      margin-bottom: 20px;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Header with title and logout button -->
+    <div class="admin-header">
+      <h1 class="admin-title">Lung Cancer AI - Admin Panel</h1>
+      <div class="header-actions">
+        <a href="#" class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main content -->
+    <div class="admin-content">
+      <!-- Overview Statistics section -->
+      <div class="admin-section">
+        <h2 class="section-title">
+          <i class="fas fa-chart-pie section-icon"></i> Overview Statistics
+        </h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Users</h3>
+            <div class="stat-value" id="totalUsers">42</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Total Predictions</h3>
+            <div class="stat-value" id="totalPredictions">156</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Benign Predictions</h3>
+            <div class="stat-value" id="benignPredictions">67</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Malignant Predictions</h3>
+            <div class="stat-value" id="malignantPredictions">48</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Normal Predictions</h3>
+            <div class="stat-value" id="normalPredictions">41</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- User Management section -->
+      <div class="admin-section">
+        <h2 class="section-title">
+          <i class="fas fa-users section-icon"></i> User Management
+        </h2>
+        
+        <div class="search-container">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search users by name or email...">
+          <button class="search-btn" id="searchBtn">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+        
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr>
+              <td>001</td>
+              <td>John Doe</td>
+              <td>john@example.com</td>
+              <td>Doctor</td>
+              <td>
+                <button class="action-btn edit-btn" data-user-id="001">Edit</button>
+                <button class="action-btn remove-btn" data-user-id="001">Remove</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>Jane Smith</td>
+              <td>jane@example.com</td>
+              <td>Doctor</td>
+              <td>
+                <button class="action-btn edit-btn" data-user-id="002">Edit</button>
+                <button class="action-btn remove-btn" data-user-id="002">Remove</button>
+              </td>
+            </tr>
+            <tr>
+              <td>003</td>
+              <td>Michael Johnson</td>
+              <td>michael@example.com</td>
+              <td>Admin</td>
+              <td>
+                <button class="action-btn edit-btn" data-user-id="003">Edit</button>
+                <button class="action-btn remove-btn" data-user-id="003">Remove</button>
+              </td>
+            </tr>
+            <tr>
+              <td>004</td>
+              <td>Sarah Williams</td>
+              <td>sarah@example.com</td>
+              <td>Radiologist</td>
+              <td>
+                <button class="action-btn edit-btn" data-user-id="004">Edit</button>
+                <button class="action-btn remove-btn" data-user-id="004">Remove</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="pagination">
+          <button class="pagination-btn" id="prevBtn">Previous</button>
+          <button class="pagination-btn" id="nextBtn">Next</button>
+        </div>
+      </div>
+      
+      <!-- System Actions section -->
+      <div class="admin-section">
+        <h2 class="section-title">
+          <i class="fas fa-cogs section-icon"></i> System Actions
+        </h2>
+        
+        <div class="system-actions">
+          <button class="system-btn restart-btn" id="restartModelBtn">
+            <i class="fas fa-sync"></i> Restart AI Model
+          </button>
+          
+          <button class="system-btn backup-btn" id="backupDataBtn">
+            <i class="fas fa-database"></i> Backup Data
+          </button>
+          
+          <button class="system-btn logs-btn" id="viewLogsBtn">
+            <i class="fas fa-list"></i> View Logs
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="admin-footer">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+      <p>&copy; 2025 Lung Cancer AI. All rights reserved.</p>
+    </div>
+  </div>
+  
+  <!-- Edit User Modal -->
+  <div class="modal" id="editUserModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit User</h2>
+        <span class="close-modal" id="closeEditModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm">
+          <input type="hidden" id="editUserId">
+          
+          <div class="form-group">
+            <label for="editName">Name</label>
+            <input type="text" class="form-control" id="editName" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" class="form-control" id="editEmail" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editRole">Role</label>
+            <select class="form-select" id="editRole">
+              <option value="Doctor">Doctor</option>
+              <option value="Radiologist">Radiologist</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" id="cancelEditBtn">Cancel</button>
+        <button class="action-btn edit-btn" id="saveUserBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirm Delete Modal -->
+  <div class="modal" id="confirmDeleteModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Delete</h2>
+        <span class="close-modal" id="closeDeleteModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove this user? This action cannot be undone.</p>
+        <input type="hidden" id="deleteUserId">
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" id="cancelDeleteBtn">Cancel</button>
+        <button class="action-btn remove-btn" id="confirmDeleteBtn">Delete User</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- View Logs Modal -->
+  <div class="modal" id="viewLogsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">System Logs</h2>
+        <span class="close-modal" id="closeLogsModal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div style="max-height: 400px; overflow-y: auto; background: #f5f5f5; padding: 15px; border-radius: 4px; font-family: monospace;">
+          <div>[2025-03-18 08:45:12] INFO: System started</div>
+          <div>[2025-03-18 09:12:34] INFO: User john@example.com logged in</div>
+          <div>[2025-03-18 09:15:22] INFO: New prediction - ID: P12345, Result: Benign</div>
+          <div>[2025-03-18 10:03:17] INFO: User sarah@example.com logged in</div>
+          <div>[2025-03-18 10:08:45] INFO: New prediction - ID: P12346, Result: Malignant</div>
+          <div>[2025-03-18 10:32:09] WARNING: Failed login attempt - IP: 192.168.1.105</div>
+          <div>[2025-03-18 11:24:53] INFO: User admin@example.com logged in</div>
+          <div>[2025-03-18 11:26:19] INFO: System settings updated</div>
+          <div>[2025-03-18 12:01:36] INFO: User jane@example.com logged in</div>
+          <div>[2025-03-18 12:05:12] INFO: New prediction - ID: P12347, Result: Normal</div>
+          <div>[2025-03-18 12:45:30] INFO: Automatic backup completed</div>
+          <div>[2025-03-18 13:12:17] INFO: User michael@example.com logged in</div>
+          <div>[2025-03-18 13:18:45] INFO: New prediction - ID: P12348, Result: Benign</div>
+          <div>[2025-03-18 14:02:23] ERROR: Database connection error - reconnecting</div>
+          <div>[2025-03-18 14:03:05] INFO: Database connection restored</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" id="closeLogsBtn">Close</button>
+        <button class="system-btn" id="downloadLogsBtn">
+          <i class="fas fa-download"></i> Download Logs
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // DOM Elements
+    const editBtns = document.querySelectorAll('.edit-btn');
+    const removeBtns = document.querySelectorAll('.remove-btn');
+    const editUserModal = document.getElementById('editUserModal');
+    const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    const viewLogsModal = document.getElementById('viewLogsModal');
+    const closeEditModal = document.getElementById('closeEditModal');
+    const closeDeleteModal = document.getElementById('closeDeleteModal');
+    const closeLogsModal = document.getElementById('closeLogsModal');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const saveUserBtn = document.getElementById('saveUserBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const closeLogsBtn = document.getElementById('closeLogsBtn');
+    const editUserForm = document.getElementById('editUserForm');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    const restartModelBtn = document.getElementById('restartModelBtn');
+    const backupDataBtn = document.getElementById('backupDataBtn');
+    const viewLogsBtn = document.getElementById('viewLogsBtn');
+    const downloadLogsBtn = document.getElementById('downloadLogsBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // Event Listeners for Edit User buttons
+    editBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const userId = this.getAttribute('data-user-id');
+        openEditModal(userId);
+      });
+    });
+    
+    // Event Listeners for Remove User buttons
+    removeBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const userId = this.getAttribute('data-user-id');
+        openDeleteModal(userId);
+      });
+    });
+    
+    // Open Edit User Modal
+    function openEditModal(userId) {
+      document.getElementById('editUserId').value = userId;
+      
+      // Fetch user data (in a real app, this would be an API call)
+      // For demo, we'll use hardcoded data
+      const userData = {
+        '001': { name: 'John Doe', email: 'john@example.com', role: 'Doctor' },
+        '002': { name: 'Jane Smith', email: 'jane@example.com', role: 'Doctor' },
+        '003': { name: 'Michael Johnson', email: 'michael@example.com', role: 'Admin' },
+        '004': { name: 'Sarah Williams', email: 'sarah@example.com', role: 'Radiologist' }
+      };
+      
+      const user = userData[userId];
+      
+      document.getElementById('editName').value = user.name;
+      document.getElementById('editEmail').value = user.email;
+      document.getElementById('editRole').value = user.role;
+      
+      editUserModal.style.display = 'block';
+    }
+    
+    // Open Delete Confirmation Modal
+    function openDeleteModal(userId) {
+      document.getElementById('deleteUserId').value = userId;
+      confirmDeleteModal.style.display = 'block';
+    }
+    
+    // Close modals
+    closeEditModal.addEventListener('click', () => {
+      editUserModal.style.display = 'none';
+    });
+    
+    closeDeleteModal.addEventListener('click', () => {
+      confirmDeleteModal.style.display = 'none';
+    });
+    
+    closeLogsModal.addEventListener('click', () => {
+      viewLogsModal.style.display = 'none';
+    });
+    
+    cancelEditBtn.addEventListener('click', () => {
+      editUserModal.style.display = 'none';
+    });
+    
+    cancelDeleteBtn.addEventListener('click', () => {
+      confirmDeleteModal.style.display = 'none';
+    });
+    
+    closeLogsBtn.addEventListener('click', () => {
+      viewLogsModal.style.display = 'none';
+    });
+    
+    // Save user changes
+    saveUserBtn.addEventListener('click', () => {
+      // In a real app, this would send data to your API
+      alert('User updated successfully!');
+      editUserModal.style.display = 'none';
+    });
+    
+    // Confirm user deletion
+    confirmDeleteBtn.addEventListener('click', () => {
+      const userId = document.getElementById('deleteUserId').value;
+      // In a real app, this would send a delete request to your API
+      alert(`User ${userId} has been removed successfully!`);
+      confirmDeleteModal.style.display = 'none';
+    });
+    
+    // Search users
+    searchBtn.addEventListener('click', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      // In a real app, this would filter users or send a search request to your API
+      alert(`Searching for: ${searchTerm}`);
+    });
+    
+    // System actions
+    restartModelBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to restart the AI model? This may interrupt active predictions.')) {
+        // In a real app, this would call an API endpoint to restart the model
+        alert('AI Model restarting...');
+      }
+    });
+    
+    backupDataBtn.addEventListener('click', () => {
+      // In a real app, this would trigger a data backup process
+      alert('Creating backup... This may take a few moments.');
+      setTimeout(() => {
+        alert('Backup completed successfully!');
+      }, 2000);
+    });
+    
+    viewLogsBtn.addEventListener('click', () => {
+      viewLogsModal.style.display = 'block';
+    });
+    
+    downloadLogsBtn.addEventListener('click', () => {
+      // In a real app, this would generate and download a log file
+      alert('Logs downloaded!');
+    });
+    
+    // Pagination
+    prevBtn.addEventListener('click', () => {
+      // In a real app, this would load the previous page of users
+      alert('Loading previous page...');
+    });
+    
+    nextBtn.addEventListener('click', () => {
+      // In a real app, this would load the next page of users
+      alert('Loading next page...');
+    });
+    
+    // Logout
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('Are you sure you want to logout?')) {
+        // In a real app, this would log the user out and redirect
+        window.location.href = 'index.html';
+      }
+    });
+    
+    // In a real application, you would fetch this data from your backend
+    function loadDashboardStats() {
+      // These would be API calls in a real app
+      document.getElementById('totalUsers').textContent = '42';
+      document.getElementById('totalPredictions').textContent = '156';
+      document.getElementById('benignPredictions').textContent = '67';
+      document.getElementById('malignantPredictions').textContent = '48';
+      document.getElementById('normalPredictions').textContent = '41';
+    }
+    
+    // Call this when the page loads
+    loadDashboardStats();
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', (event) => {
+      if (event.target === editUserModal) {
+        editUserModal.style.display = 'none';
+      }
+      if (event.target === confirmDeleteModal) {
+        confirmDeleteModal.style.display = 'none';
+      }
+      if (event.target === viewLogsModal) {
+        viewLogsModal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

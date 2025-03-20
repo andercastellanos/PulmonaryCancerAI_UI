@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lung Cancer AI - Patient Records</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0D47A1, #1976D2);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+    
+    /* Header */
+    .header {
+      background: #fff;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .header-title {
+      color: #0D47A1;
+      font-size: 24px;
+    }
+    
+    .dashboard-link {
+      background: #1976D2;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
+    }
+    
+    .dashboard-link:hover {
+      background: #0D47A1;
+    }
+    
+    /* Search section */
+    .search-section {
+      padding: 20px;
+      background: #f9f9f9;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .search-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .search-button {
+      background: #1976D2;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .search-button:hover {
+      background: #0D47A1;
+    }
+    
+    /* Patient list */
+    .patient-list-container {
+      padding: 20px;
+      background: #fff;
+    }
+    
+    .patient-list-title {
+      color: #0D47A1;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .patient-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    
+    .patient-table th, .patient-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .patient-table th {
+      background: #f5f5f5;
+      font-weight: bold;
+      color: #555;
+    }
+    
+    .patient-table tr {
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .patient-table tr:hover {
+      background: #f0f7ff;
+    }
+    
+    .patient-table tr.selected {
+      background: #e3f2fd;
+      border-left: 4px solid #1976D2;
+    }
+    
+    .status-normal {
+      color: #4caf50;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .status-investigate {
+      color: #ff9800;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .status-critical {
+      color: #f44336;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .pagination-button {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .pagination-button:hover {
+      background: #e0e0e0;
+    }
+    
+    .pagination-button.disabled {
+      background: #f5f5f5;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+    
+    /* Patient details */
+    .patient-details-container {
+      padding: 20px;
+      background: #f9f9f9;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .patient-details-title {
+      color: #0D47A1;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .patient-basic-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .patient-info-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .patient-info-label {
+      font-weight: bold;
+      color: #555;
+    }
+    
+    .medical-notes {
+      margin-bottom: 15px;
+    }
+    
+    .medical-notes-label {
+      font-weight: bold;
+      color: #555;
+      margin-right: 10px;
+    }
+    
+    /* Prediction history */
+    .prediction-history-title {
+      color: #0D47A1;
+      font-size: 18px;
+      margin: 15px 0;
+    }
+    
+    .prediction-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    .prediction-table th, .prediction-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .prediction-table th {
+      background: #f5f5f5;
+      font-weight: bold;
+      color: #555;
+    }
+    
+    /* Export button */
+    .export-button {
+      background: #1976D2;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .export-button:hover {
+      background: #0D47A1;
+    }
+    
+    /* Back to dashboard button */
+    .back-button {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .back-button a {
+      background: #f5f5f5;
+      color: #333;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
+    }
+    
+    .back-button a:hover {
+      background: #e0e0e0;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header, .search-section {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+      
+      .search-section {
+        flex-direction: column;
+      }
+      
+      .search-input {
+        width: 100%;
+      }
+      
+      .search-button {
+        margin-left: 0;
+        width: 100%;
+        margin-top: 10px;
+      }
+      
+      .patient-table {
+        display: block;
+        overflow-x: auto;
+      }
+      
+      .patient-basic-info {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1 class="header-title">Lung Cancer AI - Patient Records</h1>
+      <a href="dashboard.html" class="dashboard-link">
+        <i class="fas fa-chart-line"></i> Dashboard
+      </a>
+    </div>
+    
+    <!-- Search section -->
+    <div class="search-section">
+      <label for="searchInput" class="search-label">
+        <i class="fas fa-search"></i> Search Patient:
+      </label>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search by name, ID, or status...">
+      <button id="searchButton" class="search-button">Search</button>
+    </div>
+    
+    <!-- Patient list -->
+    <div class="patient-list-container">
+      <h2 class="patient-list-title">Patient List</h2>
+      <table class="patient-table" id="patientTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Last Prediction</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="selected" data-id="123456">
+            <td>123456</td>
+            <td>John Doe</td>
+            <td>55</td>
+            <td>Male</td>
+            <td>2025-03-15</td>
+            <td>
+              <span class="status-investigate">
+                <i class="fas fa-exclamation-triangle"></i> Investigate
+              </span>
+            </td>
+          </tr>
+          <tr data-id="234567">
+            <td>234567</td>
+            <td>Jane Smith</td>
+            <td>47</td>
+            <td>Female</td>
+            <td>2025-03-10</td>
+            <td>
+              <span class="status-normal">
+                <i class="fas fa-check-circle"></i> Normal
+              </span>
+            </td>
+          </tr>
+          <tr data-id="345678">
+            <td>345678</td>
+            <td>Carlos Ruiz</td>
+            <td>62</td>
+            <td>Male</td>
+            <td>2025-02-28</td>
+            <td>
+              <span class="status-investigate">
+                <i class="fas fa-exclamation-triangle"></i> Investigate
+              </span>
+            </td>
+          </tr>
+          <tr data-id="456789">
+            <td>456789</td>
+            <td>Sarah Johnson</td>
+            <td>58</td>
+            <td>Female</td>
+            <td>2025-03-05</td>
+            <td>
+              <span class="status-normal">
+                <i class="fas fa-check-circle"></i> Normal
+              </span>
+            </td>
+          </tr>
+          <tr data-id="567890">
+            <td>567890</td>
+            <td>Michael Wong</td>
+            <td>71</td>
+            <td>Male</td>
+            <td>2025-03-12</td>
+            <td>
+              <span class="status-critical">
+                <i class="fas fa-radiation"></i> Critical
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Pagination -->
+      <div class="pagination">
+        <button class="pagination-button disabled">
+          <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        <button class="pagination-button">
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Patient details -->
+    <div class="patient-details-container">
+      <h2 class="patient-details-title">Selected Patient Details</h2>
+      
+      <div class="patient-details" id="patientDetails">
+        <div class="patient-basic-info">
+          <div class="patient-info-item">
+            <span class="patient-info-label">Name:</span>
+            <span id="patientName">John Doe</span>
+          </div>
+          <div class="patient-info-item">
+            <span class="patient-info-label">Age:</span>
+            <span id="patientAge">55</span>
+          </div>
+          <div class="patient-info-item">
+            <span class="patient-info-label">Gender:</span>
+            <span id="patientGender">Male</span>
+          </div>
+          <div class="patient-info-item">
+            <span class="patient-info-label">Date of Birth:</span>
+            <span id="patientDob">05/12/1970</span>
+          </div>
+          <div class="patient-info-item">
+            <span class="patient-info-label">Contact:</span>
+            <span id="patientContact">(555) 123-4567</span>
+          </div>
+        </div>
+        
+        <div class="medical-notes">
+          <span class="medical-notes-label">Medical Notes:</span>
+          <span id="medicalNotes">Smoker (30 pack-years), family history of lung cancer (father), hypertension, COPD diagnosis in 2022.</span>
+        </div>
+        
+        <h3 class="prediction-history-title">Prediction History</h3>
+        <table class="prediction-table" id="predictionTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Prediction Status</th>
+              <th>Confidence (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-03-15</td>
+              <td>
+                <span class="status-investigate">
+                  <i class="fas fa-exclamation-triangle"></i> Investigate
+                </span>
+              </td>
+              <td>87%</td>
+            </tr>
+            <tr>
+              <td>2025-01-10</td>
+              <td>
+                <span class="status-normal">
+                  <i class="fas fa-check-circle"></i> Normal
+                </span>
+              </td>
+              <td>92%</td>
+            </tr>
+            <tr>
+              <td>2024-12-05</td>
+              <td>
+                <span class="status-normal">
+                  <i class="fas fa-check-circle"></i> Normal
+                </span>
+              </td>
+              <td>95%</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <button class="export-button" id="exportButton">
+          <i class="fas fa-file-pdf"></i> Export Patient Report PDF
+        </button>
+      </div>
+    </div>
+    
+    <!-- Back to dashboard -->
+    <div class="back-button">
+      <a href="dashboard.html">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+  
+  <script>
+    // DOM elements
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const patientTable = document.getElementById('patientTable');
+    const patientRows = patientTable.querySelectorAll('tbody tr');
+    const exportButton = document.getElementById('exportButton');
+    
+    // Patient data (would come from backend in real app)
+    const patients = [
+      {
+        id: "123456",
+        name: "John Doe",
+        age: 55,
+        gender: "Male",
+        dob: "05/12/1970",
+        contact: "(555) 123-4567",
+        medicalNotes: "Smoker (30 pack-years), family history of lung cancer (father), hypertension, COPD diagnosis in 2022.",
+        lastPrediction: "2025-03-15",
+        status: "investigate",
+        predictions: [
+          { date: "2025-03-15", status: "investigate", confidence: 87 },
+          { date: "2025-01-10", status: "normal", confidence: 92 },
+          { date: "2024-12-05", status: "normal", confidence: 95 }
+        ]
+      },
+      {
+        id: "234567",
+        name: "Jane Smith",
+        age: 47,
+        gender: "Female",
+        dob: "08/23/1978",
+        contact: "(555) 234-5678",
+        medicalNotes: "Non-smoker, no family history of cancer, asthma since childhood.",
+        lastPrediction: "2025-03-10",
+        status: "normal",
+        predictions: [
+          { date: "2025-03-10", status: "normal", confidence: 96 },
+          { date: "2024-12-15", status: "normal", confidence: 97 }
+        ]
+      },
+      {
+        id: "345678",
+        name: "Carlos Ruiz",
+        age: 62,
+        gender: "Male",
+        dob: "11/05/1963",
+        contact: "(555) 345-6789",
+        medicalNotes: "Former smoker (quit 5 years ago, 20 pack-years), diabetes type 2, recent pneumonia (Jan 2025).",
+        lastPrediction: "2025-02-28",
+        status: "investigate",
+        predictions: [
+          { date: "2025-02-28", status: "investigate", confidence: 82 },
+          { date: "2025-01-05", status: "investigate", confidence: 78 },
+          { date: "2024-11-20", status: "normal", confidence: 91 }
+        ]
+      },
+      {
+        id: "456789",
+        name: "Sarah Johnson",
+        age: 58,
+        gender: "Female",
+        dob: "03/17/1967",
+        contact: "(555) 456-7890",
+        medicalNotes: "Non-smoker, family history of breast cancer (mother), hypertension, annual check-ups since 2020.",
+        lastPrediction: "2025-03-05",
+        status: "normal",
+        predictions: [
+          { date: "2025-03-05", status: "normal", confidence: 94 },
+          { date: "2024-09-22", status: "normal", confidence: 96 }
+        ]
+      },
+      {
+        id: "567890",
+        name: "Michael Wong",
+        age: 71,
+        gender: "Male",
+        dob: "06/30/1954",
+        contact: "(555) 567-8901",
+        medicalNotes: "Heavy smoker (45 pack-years), occupational exposure to asbestos (1975-1990), COPD, previous lung nodule detected in 2023.",
+        lastPrediction: "2025-03-12",
+        status: "critical",
+        predictions: [
+          { date: "2025-03-12", status: "critical", confidence: 89 },
+          { date: "2025-02-01", status: "investigate", confidence: 76 },
+          { date: "2024-12-18", status: "investigate", confidence: 72 }
+        ]
+      }
+    ];
+    
+    // Function to update patient details
+    function updatePatientDetails(patientId) {
+      const patient = patients.find(p => p.id === patientId);
+      if (!patient) return;
+      
+      // Update basic info
+      document.getElementById('patientName').textContent = patient.name;
+      document.getElementById('patientAge').textContent = patient.age;
+      document.getElementById('patientGender').textContent = patient.gender;
+      document.getElementById('patientDob').textContent = patient.dob;
+      document.getElementById('patientContact').textContent = patient.contact;
+      document.getElementById('medicalNotes').textContent = patient.medicalNotes;
+      
+      // Update prediction history
+      const predictionTable = document.getElementById('predictionTable');
+      const predictionTbody = predictionTable.querySelector('tbody');
+      predictionTbody.innerHTML = '';
+      
+      patient.predictions.forEach(prediction => {
+        const row = document.createElement('tr');
+        let statusClass = '';
+        let statusIcon = '';
+        let statusText = '';
+        
+        if (prediction.status === 'normal') {
+          statusClass = 'status-normal';
+          statusIcon = 'fa-check-circle';
+          statusText = 'Normal';
+        } else if (prediction.status === 'investigate') {
+          statusClass = 'status-investigate';
+          statusIcon = 'fa-exclamation-triangle';
+          statusText = 'Investigate';
+        } else if (prediction.status === 'critical') {
+          statusClass = 'status-critical';
+          statusIcon = 'fa-radiation';
+          statusText = 'Critical';
+        }
+        
+        row.innerHTML = `
+          <td>${prediction.date}</td>
+          <td>
+            <span class="${statusClass}">
+              <i class="fas ${statusIcon}"></i> ${statusText}
+            </span>
+          </td>
+          <td>${prediction.confidence}%</td>
+        `;
+        
+        predictionTbody.appendChild(row);
+      });
+    }
+    
+    // Add click event to patient rows
+    patientRows.forEach(row => {
+      row.addEventListener('click', function() {
+        // Remove selected class from all rows
+        patientRows.forEach(r => r.classList.remove('selected'));
+        
+        // Add selected class to clicked row
+        this.classList.add('selected');
+        
+        // Update patient details
+        const patientId = this.getAttribute('data-id');
+        updatePatientDetails(patientId);
+      });
+    });
+    
+    // Search functionality
+    searchButton.addEventListener('click', function() {
+      const searchTerm = searchInput.value.toLowerCase();
+      
+      if (!searchTerm) {
+        // Show all rows if search is empty
+        patientRows.forEach(row => {
+          row.style.display = '';
+        });
+        return;
+      }
+      
+      patientRows.forEach(row => {
+        const patientId = row.querySelector('td:first-child').textContent;
+        const patientName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const status = row.querySelector('td:last-child').textContent.toLowerCase();
+        
+        if (patientId.includes(searchTerm) || patientName.includes(searchTerm) || status.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+    
+    // Search on enter key
+    searchInput.addEventListener('keyup', function(event) {
+      if (event.key === 'Enter') {
+        searchButton.click();
+      }
+    });
+    
+    // Export button
+    exportButton.addEventListener('click', function() {
+      const selectedRow = patientTable.querySelector('tr.selected');
+      if (!selectedRow) return;
+      
+      const patientId = selectedRow.getAttribute('data-id');
+      const patientName = selectedRow.querySelector('td:nth-child(2)').textContent;
+      
+      alert(`Exporting PDF report for patient: ${patientName} (ID: ${patientId})\nThis would generate a comprehensive PDF report in a real application.`);
+    });
+  </script>
+</body>
+</html>

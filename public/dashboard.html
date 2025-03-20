@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lung Cancer Prediction Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0D47A1, #1976D2);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+    
+    /* Header */
+    .dashboard-header {
+      background: #fff;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .dashboard-title {
+      color: #0D47A1;
+      font-size: 24px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .notification-bell {
+      font-size: 20px;
+      color: #555;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .notification-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #f44336;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .logout-btn {
+      background: #f5f5f5;
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .logout-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    /* Main content */
+    .dashboard-content {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    /* Patient info */
+    .patient-info {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 15px;
+      height: fit-content;
+    }
+    
+    .patient-info h2 {
+      color: #0D47A1;
+      font-size: 18px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+    
+    .patient-details p {
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .patient-details strong {
+      color: #555;
+    }
+    
+    /* Main panel */
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    /* Upload section */
+    .upload-section {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .upload-area {
+      border: 2px dashed #1976D2;
+      border-radius: 8px;
+      padding: 30px;
+      margin: 15px 0;
+      cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    
+    .upload-area:hover {
+      border-color: #0D47A1;
+      background: #f0f7ff;
+    }
+    
+    .upload-area i {
+      font-size: 48px;
+      color: #1976D2;
+      margin-bottom: 15px;
+    }
+    
+    .upload-area p {
+      color: #666;
+    }
+    
+    .upload-section input[type="file"] {
+      display: none;
+    }
+    
+    .upload-btn {
+      background: #1976D2;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 15px;
+    }
+    
+    .upload-btn:hover {
+      background: #0D47A1;
+      transform: translateY(-2px);
+    }
+    
+    /* Prediction results */
+    .results-section, 
+    .comparative-section, 
+    .actions-section, 
+    .audit-section, 
+    .insights-section, 
+    .feedback-section, 
+    .export-section {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .section-title {
+      color: #0D47A1;
+      font-size: 18px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .section-title .toggle-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #555;
+      cursor: pointer;
+    }
+    
+    .prediction-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .status-normal {
+      color: #4caf50;
+    }
+    
+    .status-suspicious {
+      color: #ff9800;
+    }
+    
+    .status-high-risk {
+      color: #f44336;
+    }
+    
+    .confidence-bars {
+      margin-top: 15px;
+    }
+    
+    .confidence-item {
+      margin-bottom: 12px;
+    }
+    
+    .confidence-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .progress-bar {
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 5px;
+    }
+    
+    .progress-fill.low-risk {
+      background: #4caf50;
+    }
+    
+    .progress-fill.medium-risk {
+      background: #ff9800;
+    }
+    
+    .progress-fill.high-risk {
+      background: #f44336;
+    }
+    
+    /* Comparative analysis */
+    .image-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .scan-container {
+      text-align: center;
+    }
+    
+    .scan-container h4 {
+      margin-bottom: 10px;
+      color: #555;
+    }
+    
+    .scan-image {
+      width: 100%;
+      height: 200px;
+      background: #e0e0e0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #777;
+    }
+    
+    /* Quick actions */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      min-width: 120px;
+      background: #f5f5f5;
+      color: #333;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .action-btn i {
+      font-size: 20px;
+      color: #1976D2;
+    }
+    
+    .action-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    /* Audit logs */
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    
+    .audit-table th, .audit-table td {
+      border: 1px solid #e0e0e0;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .audit-table th {
+      background: #f0f0f0;
+    }
+    
+    .audit-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    
+    /* AI Insights */
+    .insights-content {
+      background: #f0f7ff;
+      border-left: 4px solid #1976D2;
+      padding: 15px;
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .medical-links {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .medical-links a {
+      display: block;
+      color: #1976D2;
+      margin-bottom: 8px;
+      text-decoration: none;
+    }
+    
+    .medical-links a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Feedback section */
+    .feedback-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .feedback-btn {
+      flex: 1;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    
+    .confirm-btn {
+      color: #4caf50;
+    }
+    
+    .confirm-btn:hover {
+      background: #e8f5e9;
+    }
+    
+    .dispute-btn {
+      color: #f44336;
+    }
+    
+    .dispute-btn:hover {
+      background: #ffebee;
+    }
+    
+    .feedback-comment {
+      margin-top: 15px;
+    }
+    
+    .feedback-comment textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    /* Export section */
+    .export-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .export-btn {
+      flex: 1;
+      background: #f5f5f5;
+      color: #333;
+      border: 1px solid #ddd;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .export-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    /* Collapsible sections */
+    .section-content {
+      max-height: 1000px;
+      overflow: hidden;
+      transition: max-height 0.3s;
+    }
+    
+    .section-content.collapsed {
+      max-height: 0;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .dashboard-content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .image-comparison {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-buttons, .export-buttons {
+        flex-direction: column;
+      }
+      
+      .dashboard-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+      
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header with title, notification, and logout button -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Lung Cancer Prediction Dashboard</h1>
+      <div class="header-actions">
+        <div class="notification-bell">
+          <i class="fas fa-bell"></i>
+          <span class="notification-count">3</span>
+        </div>
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+    
+    <!-- Main dashboard content -->
+    <div class="dashboard-content">
+      <!-- Patient information sidebar -->
+      <div class="patient-info">
+        <h2>Patient Information</h2>
+        <div class="patient-details">
+          <p><strong>Name:</strong> <span id="patientName">John Doe</span></p>
+          <p><strong>Patient ID:</strong> <span id="patientId">PT-10042</span></p>
+          <p><strong>Date of Birth:</strong> <span id="patientDob">05/12/1965</span></p>
+          <p><strong>Gender:</strong> <span id="patientGender">Male</span></p>
+          <p><strong>Last Visit:</strong> <span id="lastVisit">02/15/2023</span></p>
+          <p><strong>Smoking History:</strong> <span id="smokingHistory">Former (15 years)</span></p>
+          <p><strong>Family History:</strong> <span id="familyHistory">Yes (Father)</span></p>
+          <p><strong>Previous Scans:</strong> <span id="previousScans">3</span></p>
+        </div>
+      </div>
+      
+      <!-- Main panel with all feature sections -->
+      <div class="main-panel">
+        <!-- Upload section -->
+        <div class="upload-section">
+          <h2>Upload Lung Scan Image</h2>
+          <div id="uploadArea" class="upload-area">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Drag and drop your image here or click to browse</p>
+          </div>
+          <input type="file" id="imageInput" accept="image/*" />
+          <div id="uploadStatus"></div>
+          <button id="uploadBtn" class="upload-btn">
+            <i class="fas fa-upload"></i> Upload and Predict
+          </button>
+        </div>
+        
+        <!-- Prediction results section -->
+        <div class="results-section">
+          <div class="section-title">
+            <h2>Prediction Results</h2>
+            <button class="toggle-btn" data-section="results" title="Toggle Prediction Results Section">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="section-content" id="results-content">
+            <div class="prediction-status">
+              <i class="fas fa-exclamation-triangle status-suspicious"></i>
+              <span class="status-suspicious">Suspicious</span>
+            </div>
+            <div id="predictionResult">
+              <p><strong>Predicted Classification:</strong> <span id="classificationResult">Suspicious Nodule (Class 2)</span></p>
+              <p><strong>Risk Level:</strong> <span id="riskLevel">Moderate</span></p>
+              
+              <div class="confidence-bars">
+                <div class="confidence-item">
+                  <div class="confidence-label">
+                    <span>Normal Tissue</span>
+                    <span>28%</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill low-risk" style="width: 28%"></div>
+                  </div>
+                </div>
+                
+                <div class="confidence-item">
+                  <div class="confidence-label">
+                    <span>Suspicious Nodule</span>
+                    <span>62%</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill medium-risk" style="width: 62%"></div>
+                  </div>
+                </div>
+                
+                <div class="confidence-item">
+                  <div class="confidence-label">
+                    <span>Malignant Mass</span>
+                    <div class="progress-fill high-risk width-10"></div>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill high-risk" style="width: 10%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Comparative analysis section -->
+        <div class="comparative-section">
+          <div class="section-title">
+            <h2>Comparative Analysis</h2>
+            <button class="toggle-btn" data-section="comparative" title="Toggle Comparative Analysis Section">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="section-content" id="comparative-content">
+            <div class="image-comparison">
+              <div class="scan-container">
+                <h4>Previous Scan (01/05/2023)</h4>
+                <div class="scan-image" id="previousScanImage">
+                  <i class="fas fa-image"></i> No previous scan available
+                </div>
+              </div>
+              
+              <div class="scan-container">
+                <h4>Current Scan</h4>
+                <div class="scan-image" id="currentScanImage">
+                  <i class="fas fa-image"></i> No current scan
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Quick actions section -->
+        <div class="actions-section">
+          <div class="section-title">
+            <h2>Quick Actions</h2>
+            <button class="toggle-btn" data-section="actions" title="Toggle Quick Actions Section">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="section-content" id="actions-content">
+            <div class="action-buttons">
+              <button class="action-btn" id="scheduleBtn">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Schedule Follow-Up</span>
+              </button>
+              
+              <button class="action-btn" id="specialistBtn">
+                <i class="fas fa-user-md"></i>
+                <span>Request Specialist</span>
+              </button>
+              
+              <button class="action-btn" id="testsBtn">
+                <i class="fas fa-vial"></i>
+                <span>Order Diagnostic Tests</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Audit logs section -->
+        <div class="audit-section">
+          <div class="section-title">
+            <h2>Audit Logs</h2>
+            <button class="toggle-btn" data-section="audit" title="Toggle Audit Logs Section">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="section-content" id="audit-content">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Image</th>
+                  <th>Prediction</th>
+                  <th>Confidence</th>
+                  <th>Verified By</th>
+                </tr>
+              </thead>
+              <tbody id="auditLogs">
+                <tr>
+                  <td>03/15/2023 09:45 AM</td>
+                  <td>lung_scan_356.jpg</td>
+                  <td>Suspicious</td>
+                  <td>62%</td>
+                  <td>Dr. Sarah Johnson</td>
+                </tr>
+                <tr>
+                  <td>01/05/2023 11:20 AM</td>
+                  <td>lung_scan_284.jpg</td>
+                  <td>Normal</td>
+                  <td>87%</td>
+                  <td>Dr. Michael Chen</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- AI insights section -->
+        <div class="insights-section">
+          <div class="section-title">
+            <h2>AI Insights & Guidelines</h2>
+            <button class="toggle-btn" data-section="insights" title="Toggle Insights Section">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="section-content" id="insights-content">
+            <div class="insights-content">
+              <p><strong>AI Analysis:</strong> The model has detected a suspicious nodule in the right upper lobe with irregular borders and heterogeneous density. This type of presentation warrants further investigation as it exhibits several characteristics associated with potentially malignant growths.</p>
+              <p><strong>Considerations:</strong> Location in the upper lobe, irregular margins, and size (approximately 1.8cm) are factors that increase suspicion. Consider patient's smoking history as an additional risk factor.</p>
+            </div>
+            
+            <div class="medical-links">
+              <h4>Medical Guidelines & Resources</h4>
+              <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> Fleischner Society Guidelines for Pulmonary Nodules</a>
+              <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> ACCP Lung Cancer Screening Recommendations</a>
+              <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> Radiological Appearance of Common Lung Cancers</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feedback section -->
+        <div class="feedback-section">
+          <div class="section-title">
+            <h2>Feedback</h2>
+            <button class="toggle-btn" data-section="feedback" title="Toggle Feedback Section">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="section-content" id="feedback-content">
+            <p>Do you agree with the AI prediction?</p>
+            <div class="feedback-buttons">
+              <button class="feedback-btn confirm-btn">
+                <i class="fas fa-check"></i> Confirm Prediction
+              </button>
+              <button class="feedback-btn dispute-btn">
+                <i class="fas fa-times"></i> Dispute Prediction
+              </button>
+            </div>
+            
+            <div class="feedback-comment">
+              <textarea placeholder="Optional comments about this prediction..."></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Export section -->
+        <div class="export-section">
+          <div class="section-title">
+            <h2>Export/Reports</h2>
+            <button class="toggle-btn" data-section="export" title="Toggle Export Section">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="section-content" id="export-content">
+            <div class="export-buttons">
+              <button class="export-btn" id="pdfBtn">
+                <i class="fas fa-file-pdf"></i> Export as PDF
+              </button>
+              <button class="export-btn" id="csvBtn">
+                <i class="fas fa-file-csv"></i> Export as CSV
+              </button>
+              <button class="export-btn" id="printBtn">
+                <i class="fas fa-print"></i> Print
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // DOM elements
+    const uploadBtn = document.getElementById("uploadBtn");
+    const imageInput = document.getElementById("imageInput");
+    const uploadArea = document.getElementById("uploadArea");
+    const uploadStatus = document.getElementById("uploadStatus");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const currentScanImage = document.getElementById("currentScanImage");
+    const toggleButtons = document.querySelectorAll(".toggle-btn");
+    
+    // Handle section toggling
+    toggleButtons.forEach(button => {
+      button.addEventListener("click", function() {
+        const sectionName = this.getAttribute("data-section");
+        const contentElement = document.getElementById(`${sectionName}-content`);
+        contentElement.classList.toggle("collapsed");
+        
+        // Toggle icon
+        const icon = this.querySelector("i");
+        if (contentElement.classList.contains("collapsed")) {
+          icon.classList.replace("fa-chevron-up", "fa-chevron-down");
+        } else {
+          icon.classList.replace("fa-chevron-down", "fa-chevron-up");
+        }
+      });
+    });
+    
+    // Handle drag and drop functionality
+    uploadArea.addEventListener("click", () => {
+      imageInput.click();
+    });
+    
+    uploadArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = "#0D47A1";
+      uploadArea.style.background = "#f0f7ff";
+    });
+    
+    uploadArea.addEventListener("dragleave", () => {
+      uploadArea.style.borderColor = "#1976D2";
+      uploadArea.style.background = "";
+    });
+    
+    uploadArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = "#1976D2";
+      uploadArea.style.background = "";
+      
+      if (e.dataTransfer.files.length) {
+        imageInput.files = e.dataTransfer.files;
+        const fileName = e.dataTransfer.files[0].name;
+        uploadStatus.innerHTML = `<p>Selected file: ${fileName}</p>`;
+        
+        // Display image preview
+        displayImagePreview(e.dataTransfer.files[0]);
+      }
+    });
+    
+    // Handle file selection
+    imageInput.addEventListener("change", function() {
+      if (this.files.length) {
+        const fileName = this.files[0].name;
+        uploadStatus.innerHTML = `<p>Selected file: ${fileName}</p>`;
+        
+        // Display image preview
+        displayImagePreview(this.files[0]);
+      }
+    });
+    
+    // Function to display image preview
+    function displayImagePreview(file) {
+      if (!file.type.match('image.*')) {
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentScanImage.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; border-radius: 6px;">`;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Handle image upload and prediction
+    uploadBtn.addEventListener("click", async () => {
+      const file = imageInput.files[0];
+      if (!file) {
+        alert("Please select an image file.");
+        return;
+      }
+      
+      uploadStatus.innerHTML = "<p>Uploading and predicting...</p>";
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      try {
+        const response = await fetch("http://localhost:3000/predict", {
+          method: "POST",
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          uploadStatus.innerHTML = `<p style="color: red;">Error: ${errorData.message}</p>`;
+          return;
+        }
+        
+        const data = await response.json();
+        
+        // Update prediction display
+        updatePredictionDisplay(data);
+        
+        // Add to audit log
+        addAuditLogEntry(file.name, data);
+        
+        uploadStatus.innerHTML = "<p style='color: green;'>Image processed successfully!</p>";
+      } catch (error) {
+        uploadStatus.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+      }
+    });
+    
+    // Function to update prediction display
+    function updatePredictionDisplay(data) {
+      const predictionResult = document.getElementById("predictionResult");
+      const confidenceBars = document.querySelector(".confidence-bars");
+      
+      // Determine prediction class and status
+      let predictionClass = "";
+      let statusClass = "";
+      let statusIcon = "";
+      let riskLevel = "";
+      
+      // This is just a sample implementation - adjust based on your backend response structure
+      if (data.prediction === "Normal") {
+        predictionClass = "Normal Tissue (Class 0)";
+        statusClass = "status-normal";
+        statusIcon = "fa-check-circle";
+        riskLevel = "Low";
+      } else if (data.prediction === "Suspicious") {
+        predictionClass = "Suspicious Nodule (Class 1)";
+        statusClass = "status-suspicious";
+        statusIcon = "fa-exclamation-triangle";
+        riskLevel = "Moderate";
+      } else {
+        predictionClass = "Malignant Mass (Class 2)";
+        statusClass = "status-high-risk";
+        statusIcon = "fa-radiation";
+        riskLevel = "High";
+      }
+      
+      // Update the prediction status UI
+      const predictionStatus = document.querySelector(".prediction-status");
+      predictionStatus.innerHTML = `
+        <i class="fas ${statusIcon} ${statusClass}"></i>
+        <span class="${statusClass}">${data.prediction}</span>
+      `;
+      
+      // Update confidence bars
+      let confidenceHTML = "";
+      
+      // Sample structure - adjust based on your backend response
+      const confidenceData = data.confidence || {
+        "Normal": 0.28,
+        "Suspicious": 0.62,
+        "Malignant": 0.1
+      };
+      
+      for (const [label, score] of Object.entries(confidenceData)) {
+        const percentage = (typeof score === 'number' ? score * 100 : parseFloat(score)).toFixed(0);
+        let riskClass = "";
+        
+        if (label === "Normal") riskClass = "low-risk";
+        else if (label === "Suspicious") riskClass = "medium-risk";
+        else riskClass = "high-risk";
+        
+        confidenceHTML += `
+          <div class="confidence-item">
+            <div class="confidence-label">
+              <span>${label}</span>
+              <span>${percentage}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill ${riskClass}" style="width: ${percentage}%"></div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Update the HTML
+      document.getElementById("classificationResult").textContent = predictionClass;
+      document.getElementById("riskLevel").textContent = riskLevel;
+      confidenceBars.innerHTML = confidenceHTML;
+    }
+    
+    // Function to add an entry to the audit log
+    function addAuditLogEntry(fileName, data) {
+      const auditLogs = document.getElementById("auditLogs");
+      const now = new Date();
+      const dateTimeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+      
+      // Calculate highest confidence value
+      let highestConfidence = 0;
+      if (data.confidence) {
+        const values = Object.values(data.confidence);
+        highestConfidence = Math.max(...values.map(v => typeof v === 'number' ? v : parseFloat(v)));
+      }
+      
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${dateTimeStr}</td>
+        <td>${fileName}</td>
+        <td>${data.prediction}</td>
+        <td>${(highestConfidence * 100).toFixed(0)}%</td>
+        <td>Pending</td>
+      `;
+      
+      // Add to the top of the table
+      if (auditLogs.firstChild) {
+        auditLogs.insertBefore(newRow, auditLogs.firstChild);
+      } else {
+        auditLogs.appendChild(newRow);
+      }
+    }
+    
+    // Handle action buttons
+    document.getElementById("scheduleBtn").addEventListener("click", () => {
+      alert("Scheduling follow-up appointment. This would open a scheduling interface.");
+    });
+    
+    document.getElementById("specialistBtn").addEventListener("click", () => {
+      alert("Requesting specialist review. This would open a referral form.");
+    });
+    
+    document.getElementById("testsBtn").addEventListener("click", () => {
+      alert("Ordering additional diagnostic tests. This would open an order form.");
+    });
+    
+    // Handle export buttons
+    document.getElementById("pdfBtn").addEventListener("click", () => {
+      alert("Exporting as PDF. This would generate a PDF report.");
+    });
+    
+    document.getElementById("csvBtn").addEventListener("click", () => {
+      alert("Exporting as CSV. This would generate a CSV file with prediction data.");
+    });
+    
+    document.getElementById("printBtn").addEventListener("click", () => {
+      alert("Preparing to print. This would open the print dialog.");
+    });
+    
+    // Handle feedback buttons
+    document.querySelector(".confirm-btn").addEventListener("click", function() {
+      alert("Prediction confirmed. Thank you for your feedback!");
+      this.style.background = "#e8f5e9";
+      this.disabled = true;
+      document.querySelector(".dispute-btn").disabled = false;
+      document.querySelector(".dispute-btn").style.background = "";
+    });
+    
+    document.querySelector(".dispute-btn").addEventListener("click", function() {
+      alert("Prediction disputed. Thank you for your feedback!");
+      this.style.background = "#ffebee";
+      this.disabled = true;
+      document.querySelector(".confirm-btn").disabled = false;
+      document.querySelector(".confirm-btn").style.background = "";
+    });
+    
+    // Handle notifications
+    document.querySelector(".notification-bell").addEventListener("click", () => {
+      alert("Notifications: \n- 2 new high-risk predictions need review\n- 1 specialist report received\n- System update scheduled for tonight");
+    });
+    
+    // Logout functionality
+    logoutBtn.addEventListener("click", () => {
+      // Import Firebase auth only when needed
+      import('/src/js/firebaseConfig.js').then(module => {
+        const { auth } = module;
+        auth.signOut().then(() => {
+          alert("Logged out successfully");
+          window.location.href = "/"; // Changed to root path for index.html
+        }).catch(error => {
+          console.error("Error signing out:", error);
+          alert("Error signing out: " + error.message);
+        });
+      }).catch(error => {
+        console.error("Error importing Firebase:", error);
+        alert("Logging out failed. Please try again.");
+      });
+    });
+  </script>
+  
+  <!-- Import JavaScript modules -->
+  <script type="module" src="/src/js/firebaseConfig.js"></script>
+</body>
+</html>

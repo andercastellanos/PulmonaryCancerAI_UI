@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lung Cancer AI - User Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0D47A1, #1976D2);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .feedback-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+    
+    /* Header */
+    .feedback-header {
+      background: #fff;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .feedback-title {
+      color: #0D47A1;
+      font-size: 24px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .logout-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .logout-btn:hover {
+      background: #d32f2f;
+    }
+    
+    /* Introduction Section */
+    .intro-section {
+      background: #f9f9f9;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .intro-section p {
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Feedback Form */
+    .feedback-form {
+      padding: 30px;
+      background: white;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: #1976D2;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      background-color: white;
+      transition: border-color 0.3s;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px top 50%;
+      background-size: 12px auto;
+    }
+    
+    .form-select:focus {
+      border-color: #1976D2;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+    }
+    
+    .form-textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .optional-label {
+      color: #757575;
+      font-size: 14px;
+      margin-left: 5px;
+      font-weight: normal;
+    }
+    
+    /* Submit Button */
+    .submit-container {
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    
+    .submit-btn {
+      background: #1976D2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .submit-btn:hover {
+      background: #1565C0;
+    }
+    
+    /* Footer */
+    .feedback-footer {
+      display: flex;
+      justify-content: center;
+      background: #f5f5f5;
+      padding: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .back-btn {
+      background: #f5f5f5;
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    
+    .back-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    /* Success Message */
+    .success-message {
+      display: none;
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border-left: 4px solid #43a047;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    
+    /* Error Message */
+    .error-message {
+      display: none;
+      background-color: #ffebee;
+      color: #c62828;
+      border-left: 4px solid #d32f2f;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .feedback-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+      
+      .header-actions {
+        width: 100%;
+      }
+    }
+    
+    /* Icon in select options */
+    .option-icon {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="feedback-container">
+    <!-- Header with title and logout button -->
+    <div class="feedback-header">
+      <h1 class="feedback-title">Lung Cancer AI - User Feedback</h1>
+      <div class="header-actions">
+        <a href="#" class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+    
+    <!-- Introduction text -->
+    <div class="intro-section">
+      <p>We appreciate your feedback to improve our application. Please fill out the form below and submit your suggestions or concerns.</p>
+    </div>
+    
+    <!-- Feedback Form -->
+    <div class="feedback-form">
+      <!-- Success Message -->
+      <div class="success-message" id="successMessage">
+        <i class="fas fa-check-circle"></i> Thank you for your feedback! We value your input and will use it to improve our service.
+      </div>
+      
+      <!-- Error Message -->
+      <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-circle"></i> There was an error submitting your feedback. Please try again.
+      </div>
+      
+      <form id="feedbackForm">
+        <div class="form-group">
+          <label for="name">Name <span class="optional-label">(optional)</span></label>
+          <input type="text" class="form-control" id="name" placeholder="Your name">
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email <span class="optional-label">(optional)</span></label>
+          <input type="email" class="form-control" id="email" placeholder="Your email address">
+        </div>
+        
+        <div class="form-group">
+          <label for="category">Feedback Category</label>
+          <select class="form-select" id="category" required>
+            <option value="" disabled selected>Select a category</option>
+            <option value="ai_accuracy">🧠 AI Prediction Accuracy</option>
+            <option value="ui_ux">🎨 UI/UX Improvement</option>
+            <option value="bug">🐞 Bug Report</option>
+            <option value="other">⚙️ Other</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="details">Feedback Details</label>
+          <textarea class="form-control form-textarea" id="details" placeholder="Describe your feedback or issue here..." required></textarea>
+        </div>
+        
+        <div class="submit-container">
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <i class="fas fa-paper-plane"></i> Submit Feedback
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Footer -->
+    <div class="feedback-footer">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+  
+  <script>
+    // DOM Elements
+    const feedbackForm = document.getElementById('feedbackForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const categorySelect = document.getElementById('category');
+    const detailsTextarea = document.getElementById('details');
+    const submitBtn = document.getElementById('submitBtn');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // Form submission
+    feedbackForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Basic validation
+      if (!categorySelect.value) {
+        alert('Please select a feedback category');
+        categorySelect.focus();
+        return;
+      }
+      
+      if (!detailsTextarea.value.trim()) {
+        alert('Please provide feedback details');
+        detailsTextarea.focus();
+        return;
+      }
+      
+      // Email validation if provided
+      if (emailInput.value && !isValidEmail(emailInput.value)) {
+        alert('Please enter a valid email address');
+        emailInput.focus();
+        return;
+      }
+      
+      // Disable submit button during submission
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+      
+      // Simulate form submission with a delay
+      setTimeout(() => {
+        // In a real application, you would make an API call here
+        // For demo purposes, we'll just simulate a successful submission
+        
+        const formData = {
+          name: nameInput.value,
+          email: emailInput.value,
+          category: categorySelect.value,
+          details: detailsTextarea.value
+        };
+        
+        console.log('Form submission data:', formData);
+        
+        // Show success message
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        
+        // Reset the form
+        feedbackForm.reset();
+        
+        // Scroll to success message
+        successMessage.scrollIntoView({ behavior: 'smooth' });
+        
+        // Reset submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback';
+        
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          successMessage.style.display = 'none';
+        }, 5000);
+        
+      }, 1500); // Simulating network delay
+    });
+    
+    // Email validation helper function
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+    
+    // Logout
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('Are you sure you want to logout?')) {
+        // In a real app, this would log the user out and redirect
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>
