@@ -18,13 +18,14 @@ document.getElementById('login-form')?.addEventListener('submit', async (event) 
       return;
     }
     
-    alert("Login successful!");
     console.log("User logged in:", user);
-    
+
+    localStorage.setItem('userEmail', user.email);
+
     // Redirect to dashboard
     window.location.href = "dashboard.html";
   } catch (error) {
     console.error("Login error:", error);
-    alert(error.message);
+    alert("Login failed. Please check your email and password.");
   }
 });

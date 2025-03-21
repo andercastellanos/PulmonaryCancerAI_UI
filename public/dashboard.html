@@ -503,11 +503,83 @@
   </style>
 </head>
 <body>
+    <!-- Sidebar menu -->
+    <div id="sidebar" class="sidebar">
+      <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="patientRecords.html"> My Patients</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="admin.html">Administration</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+
+    <style>
+      /* Sidebar styles */
+    .sidebar {
+      position: fixed;
+      right: -250px; /* Hidden initially */
+      top: 0;
+      width: 150px;
+      height: 100%;
+      background: #0D47A1;
+      color: white;
+      padding-top: 20px;
+      transition: right 0.3s ease-in-out;
+      z-index: 1000;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 15px;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      font-size: 18px;
+    }
+
+    .sidebar ul li a:hover {
+      background: #1976D2;
+      padding-left: 10px;
+    }
+
+    /* Burger menu */
+    .burger-menu {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .burger-menu:hover {
+      transform: scale(1.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .dashboard-title {
+        font-size: 20px;
+      }
+    }
+
+    </style>
+    
   <div class="dashboard">
     <!-- Header with title, notification, and logout button -->
     <div class="dashboard-header">
       <h1 class="dashboard-title">Lung Cancer Prediction Dashboard</h1>
       <div class="header-actions">
+        <div id="userFullName" class="user-fullname"></div>
+        <div class="burger-menu" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </div>
         <div class="notification-bell">
           <i class="fas fa-bell"></i>
           <span class="notification-count">3</span>
@@ -517,6 +589,20 @@
         </button>
       </div>
     </div>
+    
+    <script>
+      function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        if (sidebar.style.right === "0px") {
+          sidebar.style.right = "-250px"; // Hide sidebar
+        } else {
+          sidebar.style.right = "0px"; // Show sidebar
+        }
+      }
+    </script>
+
+    <script type="module" src="src/js/dashboardName.js"></script>
+
     
     <!-- Main dashboard content -->
     <div class="dashboard-content">
