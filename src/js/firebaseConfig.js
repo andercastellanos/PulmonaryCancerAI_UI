@@ -1,7 +1,7 @@
 // src/js/firebaseConfig.js
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth'; 
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,5 +19,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+// Ensure Firebase persists the authentication state across pages
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    // Authentication state will now persist across page reloads
+    console.log("Persistence set successfully.");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence: ", error);
+  });
 
 export { auth, db };

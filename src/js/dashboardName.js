@@ -1,5 +1,8 @@
 import { db } from './firebaseConfig.js';  // Make sure you're importing Firestore from the correct file
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { auth } from './firebaseConfig.js'; // Import auth from your firebaseConfig
+import { onAuthStateChanged } from 'firebase/auth';
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Assuming you've already stored the user's email in local storage or session
@@ -35,5 +38,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (error) {
     console.error("Error fetching user data from Firestore:", error);
+  }
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in
+    console.log("User is signed in:", user);
+    
+    // You can access user information here, for example:
+    localStorage.setItem('userEmail', user.email);
+    
+    // Optionally, redirect if the user is already logged in (to avoid being on the login page)
+    if (window.location.pathname === '/login.html') {
+      window.location.href = 'dashboard.html';
+    }
+  } else {
+    // No user is signed in
+    console.log("No user is signed in.");
+    
+    // Optionally, redirect the user to the login page if they are not logged in
+    if (window.location.pathname !== '/login.html') {
+      window.location.href = 'login.html';
+    }
   }
 });

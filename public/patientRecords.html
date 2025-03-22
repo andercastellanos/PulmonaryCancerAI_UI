@@ -355,9 +355,11 @@
       </label>
       <input type="text" id="searchInput" class="search-input" placeholder="Search by name, ID, or status...">
       <button id="searchButton" class="search-button">Search</button>
-      <button id="newPatientButton" class="search-button">New Patient</button>
-
+      <button id="newPatientBtn" class="search-button">New Patient</button>
     </div>
+
+        <script type="module" src="src/js/test.js"></script>
+
     
     <!-- Patient list -->
     <div class="patient-list-container">
@@ -374,69 +376,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="selected" data-id="123456">
-            <td>123456</td>
-            <td>John Doe</td>
-            <td>55</td>
-            <td>Male</td>
-            <td>2025-03-15</td>
-            <td>
-              <span class="status-investigate">
-                <i class="fas fa-exclamation-triangle"></i> Investigate
-              </span>
-            </td>
-          </tr>
-          <tr data-id="234567">
-            <td>234567</td>
-            <td>Jane Smith</td>
-            <td>47</td>
-            <td>Female</td>
-            <td>2025-03-10</td>
-            <td>
-              <span class="status-normal">
-                <i class="fas fa-check-circle"></i> Normal
-              </span>
-            </td>
-          </tr>
-          <tr data-id="345678">
-            <td>345678</td>
-            <td>Carlos Ruiz</td>
-            <td>62</td>
-            <td>Male</td>
-            <td>2025-02-28</td>
-            <td>
-              <span class="status-investigate">
-                <i class="fas fa-exclamation-triangle"></i> Investigate
-              </span>
-            </td>
-          </tr>
-          <tr data-id="456789">
-            <td>456789</td>
-            <td>Sarah Johnson</td>
-            <td>58</td>
-            <td>Female</td>
-            <td>2025-03-05</td>
-            <td>
-              <span class="status-normal">
-                <i class="fas fa-check-circle"></i> Normal
-              </span>
-            </td>
-          </tr>
-          <tr data-id="567890">
-            <td>567890</td>
-            <td>Michael Wong</td>
-            <td>71</td>
-            <td>Male</td>
-            <td>2025-03-12</td>
-            <td>
-              <span class="status-critical">
-                <i class="fas fa-radiation"></i> Critical
-              </span>
-            </td>
-          </tr>
+          <!-- Patient rows will be dynamically inserted here -->
         </tbody>
       </table>
-      
+
+      <script type="module" src="src/js/newpatient.js"></script>
+
       <!-- Pagination -->
       <div class="pagination">
         <button class="pagination-button disabled">

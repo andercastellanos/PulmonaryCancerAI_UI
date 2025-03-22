@@ -15,19 +15,24 @@
     }
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #0D47A1, #1976D2);
+      background: url('/lung_image.jpg') no-repeat center center fixed, red; 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #333;
       min-height: 100vh;
       padding: 20px;
     }
     
     .dashboard {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.0); 
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    padding: 20px; 
     }
     
     /* Header */
@@ -520,9 +525,9 @@
       position: fixed;
       right: -250px; /* Hidden initially */
       top: 0;
-      width: 150px;
+      width: 170px;
       height: 100%;
-      background: #0D47A1;
+      background:  rgba(1, 217, 246, 0.20);
       color: white;
       padding-top: 20px;
       transition: right 0.3s ease-in-out;
@@ -539,12 +544,17 @@
     }
 
     .sidebar ul li a {
-      color: white;
-      text-decoration: none;
+      color: white; /* Text color */
+      text-decoration: none; /* Remove underline */
       display: block;
+      font-family: 'Roboto', sans-serif;
       font-size: 18px;
+      padding: 12px 20px; /* Add padding for a button-like appearance */
+      background-color: rgb(254, 68, 111); /* Button background color */
+      border-radius: 8px; /* Rounded corners */
+      text-align: center; /* Center align text inside the button */
+      transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effect */
     }
-
     .sidebar ul li a:hover {
       background: #1976D2;
       padding-left: 10px;
@@ -603,6 +613,7 @@
 
     <script type="module" src="src/js/dashboardName.js"></script>
 
+    
     
     <!-- Main dashboard content -->
     <div class="dashboard-content">
