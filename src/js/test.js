@@ -1,41 +1,126 @@
-import { db } from './firebaseConfig.js';  // Import Firestore and Auth
-import { collection, doc, setDoc } from 'firebase/firestore';  // Import Firestore methods
-import { auth } from './firebaseConfig.js'; // Import auth from your firebaseConfig
+import { db } from './firebaseConfig.js';
+import { collection, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { auth } from './firebaseConfig.js';
 import { onAuthStateChanged } from 'firebase/auth';
 
-// Listen for authentication state changes
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // If a user is logged in, you can show their data or enable certain UI elements
-    console.log("User is signed in:", user);
-    // Now you can proceed to add patients or other logic for the logged-in user
-    document.getElementById('newPatientBtn').addEventListener('click', () => addNewPatient(user.uid));
-  } else {
-    // If no user is logged in, show a login prompt or disable certain features
-    console.log("No user logged in");
-  }
+// Get modal elements
+const newPatientModal = document.getElementById("newPatientModal");
+const newPatientBtn = document.getElementById("newPatientBtn");
+const closeNewPatientModal = document.getElementById("closeNewPatientModal");
+const cancelNewPatientBtn = document.getElementById("cancelNewPatientBtn");
+const savePatientBtn = document.getElementById("savePatientBtn");
+
+// Function to clear the form fields
+const clearForm = () => {
+    document.getElementById("patientName").value = "";
+    document.getElementById("patientAge").value = "";
+    document.getElementById("patientGender").value = "";
+    document.getElementById("patientDOB").value = "";
+    document.getElementById("patientContact").value = "";
+    document.getElementById("patientNotes").value = "";
+};
+
+// Open modal
+newPatientBtn.addEventListener("click", () => {
+    newPatientModal.style.display = "block";
+    clearForm(); // Clear the form when opening the modal
 });
 
-// Function to add new patient data
-const addNewPatient = async (userId) => {
-  const newPatient = {
-    id: "678766",  // Example patient ID (can be generated)
-    name: "John Doe",
-    age: 48,
-    gender: "Male",
-    lastPrediction: "2025-03-18",
-    status: "Malignant"
-  };
+// Close modal
+closeNewPatientModal.addEventListener("click", () => {
+    newPatientModal.style.display = "none";
+    clearForm(); // Clear the form when closing the modal
+});
 
-  try {
-    // Reference to the user's "patients" collection in Firestore
-    const patientsRef = collection(db, "users", userId, "patients");
-    await setDoc(doc(patientsRef, newPatient.id), newPatient);  // Add the new patient to Firestore
-    console.log(`Patient ${newPatient.name} added successfully.`);
+cancelNewPatientBtn.addEventListener("click", () => {
+    newPatientModal.style.display = "none";
+    clearForm(); // Clear the form when canceling
+});
 
-    // Refresh the page after adding the new patient
-    window.location.reload(); // Reload the page to update the data
-  } catch (error) {
-    console.error("Error adding patient: ", error);
-  }
-};
+// Close modal when clicking outside of it
+window.addEventListener("click", (event) => {
+    if (event.target === newPatientModal) {
+        newPatientModal.style.display = "none";
+        clearForm(); // Clear the form when clicking outside the modal
+    }
+});
+
+// Date of Birth validation (Year must be 4 digits)
+document.getElementById("patientDOB").addEventListener("blur", function () {
+    let dobInput = this.value;
+    let dobError = document.getElementById("dobError");
+
+    if (dobInput) {
+        let [year, month, day] = dobInput.split("-").map(num => parseInt(num, 10));
+
+        // Ensure the year is 4 digits
+        const isValidYear = year >= 1000 && year <= 9999;
+
+        const isValidMonth = month >= 1 && month <= 12;
+        const isValidDay = day >= 1 && day <= 31;
+
+        if (!isValidYear || !isValidMonth || !isValidDay) {
+            dobError.style.display = "inline";
+            this.value = ""; // Clear invalid input
+        } else {
+            dobError.style.display = "none";
+        }
+    }
+});
+
+// Handle form submission
+savePatientBtn.addEventListener("click", async () => {
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            console.error("No user logged in");
+            return;
+        }
+
+        const userId = user.uid;
+        const patientsRef = collection(db, "users", userId, "patients");
+        const counterDocRef = doc(db, "users", userId, "counters", "patientIdCounter");
+
+        try {
+            // Fetch the current counter value (highest patient ID)
+            const counterDoc = await getDoc(counterDocRef);
+
+            let newPatientId;
+            if (counterDoc.exists()) {
+                // Increment the counter by 1
+                newPatientId = counterDoc.data().value + 1;
+                // Update the counter document with the new value
+                await updateDoc(counterDocRef, { value: newPatientId });
+            } else {
+                // If counter does not exist, initialize it with 1
+                newPatientId = 1;
+                await setDoc(counterDocRef, { value: newPatientId });
+            }
+
+            const patientData = {
+                id: newPatientId.toString(), // Use the incremented ID as a string
+                name: document.getElementById("patientName").value,
+                age: document.getElementById("patientAge").value,
+                gender: document.getElementById("patientGender").value,
+                dob: document.getElementById("patientDOB").value,
+                contact: document.getElementById("patientContact").value,
+                notes: document.getElementById("patientNotes").value
+            };
+
+            // Save the patient data with the new ID
+            await setDoc(doc(patientsRef, patientData.id), patientData);
+            console.log(`Patient ${patientData.name} added successfully with ID ${patientData.id}`);
+
+            // Clear the form after saving
+            clearForm();
+
+            // Close the modal after saving
+            newPatientModal.style.display = "none";
+
+            // Refresh the page after adding the patient
+            location.reload(); // This will reload the page to reflect the updated data
+
+        } catch (error) {
+            console.error("Error adding patient: ", error);
+        }
+    });
+});

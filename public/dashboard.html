@@ -621,17 +621,19 @@
       <div class="patient-info">
         <h2>Patient Information</h2>
         <div class="patient-details">
-          <p><strong>Name:</strong> <span id="patientName">John Doe</span></p>
-          <p><strong>Patient ID:</strong> <span id="patientId">PT-10042</span></p>
-          <p><strong>Date of Birth:</strong> <span id="patientDob">05/12/1965</span></p>
-          <p><strong>Gender:</strong> <span id="patientGender">Male</span></p>
-          <p><strong>Last Visit:</strong> <span id="lastVisit">02/15/2023</span></p>
-          <p><strong>Smoking History:</strong> <span id="smokingHistory">Former (15 years)</span></p>
-          <p><strong>Family History:</strong> <span id="familyHistory">Yes (Father)</span></p>
-          <p><strong>Previous Scans:</strong> <span id="previousScans">3</span></p>
+          <p><strong>Name:</strong> <span id="dashboardPatientName"></span></p>
+          <p><strong>Patient ID:</strong> <span id="dashboardPatientId"></span></p>
+          <p><strong>Date of Birth:</strong> <span id="dashboardPatientDob"></span></p>
+          <p><strong>Gender:</strong> <span id="dashboardPatientGender"></span></p>
+          <p><strong>Last Visit:</strong> <span id="lastVisit"></span></p>
+          <p><strong>Medical Notes:</strong> <span id="dashboardMedicalNotes"></span></p>
+          <p><strong>Family History:</strong> <span id="familyHistory"></span></p>
+          <p><strong>Previous Scans:</strong> <span id="previousScans"></span></p>
         </div>
       </div>
       
+      <script type="module" src="src/js/patientDetails.js"></script>
+
       <!-- Main panel with all feature sections -->
       <div class="main-panel">
         <!-- Upload section -->
@@ -1145,6 +1147,7 @@
       // Import Firebase auth only when needed
       import('/src/js/firebaseConfig.js').then(module => {
         const { auth } = module;
+        localStorage.removeItem('selectedPatient');
         auth.signOut().then(() => {
           alert("Logged out successfully");
           window.location.href = "/"; // Changed to root path for index.html

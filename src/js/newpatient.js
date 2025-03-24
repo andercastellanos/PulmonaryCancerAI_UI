@@ -59,9 +59,9 @@ const displayPatients = () => {
       <td>${patient.gender}</td>
       <td>${patient.lastPrediction || 'N/A'}</td>
       <td>
-        <span class="status-${patient.status.toLowerCase()}">
+        <span class="status-${patient.status ? patient.status.toLowerCase() : 'unknown'}">
           <i class="fas ${getStatusIcon(patient.status)}"></i>
-          ${patient.status}
+          ${patient.status || 'Unknown'}
         </span>
       </td>
     `;
@@ -75,19 +75,37 @@ const displayPatients = () => {
 
 // Get status icon class
 const getStatusIcon = (status) => {
-  if (status === 'Normal') return 'fa-check-circle';
-  if (status === 'Investigate') return 'fa-exclamation-triangle';
-  return 'fa-radiation';
+  if (status === 'Normal') return 'fa-check-circle'; // Green check icon
+  if (status === 'Investigate') return 'fa-exclamation-triangle'; // Yellow exclamation icon
+  if (status === 'Malignant') return 'fa-radiation'; // Red radiation icon for Malignant
+  return 'fa-question'; // Default icon for 'Unknown' (question mark)
+};
+
+// Get status color (for styling)
+const getStatusColor = (status) => {
+  if (status === 'Normal') return 'green'; // Green color for Normal
+  if (status === 'Investigate') return 'orange'; // Orange color for Investigate
+  if (status === 'Malignant') return 'red'; // Red color for Malignant
+  return 'gray'; // Gray color for Unknown
 };
 
 // Select a patient and display details
 const selectPatient = (patient) => {
-  document.getElementById('patientName').textContent = patient.name;
-  document.getElementById('patientAge').textContent = patient.age;
-  document.getElementById('patientGender').textContent = patient.gender;
-  document.getElementById('patientDob').textContent = patient.dob || 'N/A';
-  document.getElementById('patientContact').textContent = patient.contact || 'N/A';
+  console.log("Selected patient:", patient);
+
+  localStorage.setItem('selectedPatient', JSON.stringify(patient));
+
+  // Update patient details in the UI
+  document.getElementById('selectedPatientName').textContent = patient.name || 'N/A';
+  document.getElementById('selectedPatientAge').textContent = patient.age || 'N/A';
+  document.getElementById('selectedPatientGender').textContent = patient.gender || 'N/A';
+  document.getElementById('selectedPatientDoB').textContent = patient.dob || 'N/A';
+  document.getElementById('selectedPatientContact').textContent = patient.contact || 'N/A';
+
+  // Display medical notes if available
+  document.getElementById('selectedMedicalNotes').textContent = patient.notes || 'No medical notes available.';
 };
+
 
 // Search function
 document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -95,7 +113,9 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
   filteredPatients = patients.filter(patient =>
     patient.name.toLowerCase().includes(searchTerm) ||
     patient.id.toLowerCase().includes(searchTerm) ||
-    patient.status.toLowerCase().includes(searchTerm)
+    (patient.status ? patient.status.toLowerCase() : '').includes(searchTerm) ||
+    (patient.age ? patient.age.toString().includes(searchTerm) : false) ||
+    (patient.gender ? patient.gender.toLowerCase().includes(searchTerm) : false)
   );
 
   currentPage = 1; // Reset to first page when searching

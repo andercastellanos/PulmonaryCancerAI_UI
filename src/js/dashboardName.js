@@ -26,8 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const userDoc = querySnapshot.docs[0];  // Get the first matching document
       const fullName = userDoc.data().fullName;
 
-      console.log("Full Name fetched from Firestore:", fullName);  // Log the full name
-
       // Display the full name in the dashboard header
       const userFullNameElement = document.getElementById('userFullName');
       if (userFullNameElement) {

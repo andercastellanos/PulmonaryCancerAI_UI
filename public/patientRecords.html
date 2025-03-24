@@ -336,6 +336,90 @@
         gap: 10px;
       }
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0D47A1;
+    }
+    
+    .close-modal {
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .close-modal:hover {
+      color: #333;
+    }
+    
+    .modal-body {
+      margin-bottom: 20px;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      background-color: white;
+    }
   </style>
 </head>
 <body>
@@ -354,9 +438,62 @@
         <i class="fas fa-search"></i> Search Patient:
       </label>
       <input type="text" id="searchInput" class="search-input" placeholder="Search by name, ID, or status...">
-      <button id="searchButton" class="search-button">Search</button>
+      <!-- <button id="searchButton" class="search-button">Search</button> -->
       <button id="newPatientBtn" class="search-button">New Patient</button>
     </div>
+<!-- New Patient Modal -->
+<div class="modal" id="newPatientModal">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h2 class="modal-title">New Patient</h2>
+          <span class="close-modal" id="closeNewPatientModal">&times;</span>
+      </div>
+      <div class="modal-body">
+          <form id="newPatientForm">
+              <div class="form-group">
+                  <label for="patientName">Name</label>
+                  <input type="text" class="form-control" id="patientName" required>
+              </div>
+
+              <div class="form-group">
+                  <label for="patientAge">Age</label>
+                  <input type="number" class="form-control" id="patientAge" required>
+              </div>
+
+              <div class="form-group">
+                  <label for="patientGender">Gender</label>
+                  <select class="form-select" id="patientGender">
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                  <label for="patientDOB">Date of Birth</label>
+                  <input type="date" class="form-control" id="patientDOB" required>
+                  <small id="dobError" style="color: red; display: none;">Invalid date format. Please enter a valid date.</small>
+              </div>
+
+              <div class="form-group">
+                  <label for="patientContact">Contact</label>
+                  <input type="tel" class="form-control" id="patientContact" required>
+              </div>
+
+              <div class="form-group">
+                  <label for="patientNotes">Medical Notes</label>
+                  <textarea class="form-control" id="patientNotes"></textarea>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button class="search-button" id="cancelNewPatientBtn">Cancel</button>
+          <button class="search-button" id="savePatientBtn">Save Patient</button>
+      </div>
+  </div>
+</div>
+
+
 
         <script type="module" src="src/js/test.js"></script>
 
@@ -380,7 +517,7 @@
         </tbody>
       </table>
 
-      <script type="module" src="src/js/newpatient.js"></script>
+      <!-- <script type="module" src="src/js/newpatient.js"></script> -->
 
       <!-- Pagination -->
       <div class="pagination">
@@ -401,30 +538,33 @@
         <div class="patient-basic-info">
           <div class="patient-info-item">
             <span class="patient-info-label">Name:</span>
-            <span id="patientName">John Doe</span>
+            <span id="selectedPatientName"></span>
           </div>
           <div class="patient-info-item">
             <span class="patient-info-label">Age:</span>
-            <span id="patientAge">55</span>
+            <span id="selectedPatientAge"></span>
           </div>
           <div class="patient-info-item">
             <span class="patient-info-label">Gender:</span>
-            <span id="patientGender">Male</span>
+            <span id="selectedPatientGender"></span>
           </div>
           <div class="patient-info-item">
             <span class="patient-info-label">Date of Birth:</span>
-            <span id="patientDob">05/12/1970</span>
+            <span id="selectedPatientDoB"></span>
           </div>
           <div class="patient-info-item">
             <span class="patient-info-label">Contact:</span>
-            <span id="patientContact">(555) 123-4567</span>
+            <span id="selectedPatientContact"></span>
           </div>
         </div>
         
         <div class="medical-notes">
           <span class="medical-notes-label">Medical Notes:</span>
-          <span id="medicalNotes">Smoker (30 pack-years), family history of lung cancer (father), hypertension, COPD diagnosis in 2022.</span>
+          <span id="selectedMedicalNotes"></span>
         </div>
+
+        <script type="module" src="src/js/newpatient.js"></script>
+
         
         <h3 class="prediction-history-title">Prediction History</h3>
         <table class="prediction-table" id="predictionTable">
@@ -483,7 +623,7 @@
   <script>
     // DOM elements
     const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
+    // const searchButton = document.getElementById('searchButton');
     const patientTable = document.getElementById('patientTable');
     const patientRows = patientTable.querySelectorAll('tbody tr');
     const exportButton = document.getElementById('exportButton');
@@ -638,16 +778,16 @@
     });
     
     // Search functionality
-    searchButton.addEventListener('click', function() {
-      const searchTerm = searchInput.value.toLowerCase();
+    // searchButton.addEventListener('click', function() {
+    //   const searchTerm = searchInput.value.toLowerCase();
       
-      if (!searchTerm) {
-        // Show all rows if search is empty
-        patientRows.forEach(row => {
-          row.style.display = '';
-        });
-        return;
-      }
+    //   if (!searchTerm) {
+    //     // Show all rows if search is empty
+    //     patientRows.forEach(row => {
+    //       row.style.display = '';
+    //     });
+    //     return;
+    //   }
       
       patientRows.forEach(row => {
         const patientId = row.querySelector('td:first-child').textContent;
@@ -660,14 +800,14 @@
           row.style.display = 'none';
         }
       });
-    });
+    // });
     
     // Search on enter key
-    searchInput.addEventListener('keyup', function(event) {
-      if (event.key === 'Enter') {
-        searchButton.click();
-      }
-    });
+    // searchInput.addEventListener('keyup', function(event) {
+    //   if (event.key === 'Enter') {
+    //     searchButton.click();
+    //   }
+    // });
     
     // Export button
     exportButton.addEventListener('click', function() {
