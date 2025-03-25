@@ -26,13 +26,13 @@
     }
     
     .dashboard {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.0); 
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    padding: 20px; 
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.0); 
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      padding: 20px; 
     }
     
     /* Header */
@@ -234,11 +234,11 @@
       color: #4caf50;
     }
     
-    .status-suspicious {
+    .status-benign {
       color: #ff9800;
     }
     
-    .status-high-risk {
+    .status-malignant {
       color: #f44336;
     }
     
@@ -268,18 +268,19 @@
       border-radius: 5px;
     }
     
-    .progress-fill.low-risk {
+    .progress-fill.normal {
       background: #4caf50;
     }
     
-    .progress-fill.medium-risk {
+    .progress-fill.benign {
       background: #ff9800;
     }
     
-    .progress-fill.high-risk {
+    .progress-fill.malignant {
       background: #f44336;
     }
     
+    /* Additional styles remain unchanged */
     /* Comparative analysis */
     .image-comparison {
       display: grid;
@@ -341,7 +342,7 @@
       background: #e0e0e0;
     }
     
-    /* Audit logs */
+    /* Additional sections */
     .audit-table {
       width: 100%;
       border-collapse: collapse;
@@ -660,43 +661,15 @@
           </div>
           <div class="section-content" id="results-content">
             <div class="prediction-status">
-              <i class="fas fa-exclamation-triangle status-suspicious"></i>
-              <span class="status-suspicious">Suspicious</span>
+              <i class="fas fa-question-circle"></i>
+              <span>Awaiting Analysis</span>
             </div>
             <div id="predictionResult">
-              <p><strong>Predicted Classification:</strong> <span id="classificationResult">Suspicious Nodule (Class 2)</span></p>
-              <p><strong>Risk Level:</strong> <span id="riskLevel">Moderate</span></p>
+              <p><strong>Predicted Classification:</strong> <span id="classificationResult">Not yet analyzed</span></p>
+              <p><strong>Risk Level:</strong> <span id="riskLevel">Unknown</span></p>
               
               <div class="confidence-bars">
-                <div class="confidence-item">
-                  <div class="confidence-label">
-                    <span>Normal Tissue</span>
-                    <span>28%</span>
-                  </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill low-risk" style="width: 28%"></div>
-                  </div>
-                </div>
-                
-                <div class="confidence-item">
-                  <div class="confidence-label">
-                    <span>Suspicious Nodule</span>
-                    <span>62%</span>
-                  </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill medium-risk" style="width: 62%"></div>
-                  </div>
-                </div>
-                
-                <div class="confidence-item">
-                  <div class="confidence-label">
-                    <span>Malignant Mass</span>
-                    <div class="progress-fill high-risk width-10"></div>
-                  </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill high-risk" style="width: 10%"></div>
-                  </div>
-                </div>
+                <!-- Will be populated by JavaScript -->
               </div>
             </div>
           </div>
@@ -713,7 +686,7 @@
           <div class="section-content" id="comparative-content">
             <div class="image-comparison">
               <div class="scan-container">
-                <h4>Previous Scan (01/05/2023)</h4>
+                <h4>Previous Scan (if available)</h4>
                 <div class="scan-image" id="previousScanImage">
                   <i class="fas fa-image"></i> No previous scan available
                 </div>
@@ -777,20 +750,7 @@
                 </tr>
               </thead>
               <tbody id="auditLogs">
-                <tr>
-                  <td>03/15/2023 09:45 AM</td>
-                  <td>lung_scan_356.jpg</td>
-                  <td>Suspicious</td>
-                  <td>62%</td>
-                  <td>Dr. Sarah Johnson</td>
-                </tr>
-                <tr>
-                  <td>01/05/2023 11:20 AM</td>
-                  <td>lung_scan_284.jpg</td>
-                  <td>Normal</td>
-                  <td>87%</td>
-                  <td>Dr. Michael Chen</td>
-                </tr>
+                <!-- Will be populated by JavaScript when predictions are made -->
               </tbody>
             </table>
           </div>
@@ -805,16 +765,16 @@
             </button>
           </div>
           <div class="section-content" id="insights-content">
-            <div class="insights-content">
-              <p><strong>AI Analysis:</strong> The model has detected a suspicious nodule in the right upper lobe with irregular borders and heterogeneous density. This type of presentation warrants further investigation as it exhibits several characteristics associated with potentially malignant growths.</p>
-              <p><strong>Considerations:</strong> Location in the upper lobe, irregular margins, and size (approximately 1.8cm) are factors that increase suspicion. Consider patient's smoking history as an additional risk factor.</p>
+            <div class="insights-content" id="aiInsights">
+              <!-- Will be populated based on prediction -->
+              <p>No analysis available yet. Please upload an image first.</p>
             </div>
             
             <div class="medical-links">
               <h4>Medical Guidelines & Resources</h4>
-              <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> Fleischner Society Guidelines for Pulmonary Nodules</a>
-              <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> ACCP Lung Cancer Screening Recommendations</a>
-              <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> Radiological Appearance of Common Lung Cancers</a>
+              <a href="https://www.nccn.org/guidelines/guidelines-detail?category=3&id=1528" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> NCCN Guidelines for Lung Cancer Screening</a>
+              <a href="https://www.cancer.org/cancer/types/lung-cancer/detection-diagnosis-staging/signs-symptoms.html" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> American Cancer Society - Lung Cancer Symptoms</a>
+              <a href="https://www.radiologyinfo.org/en/info/lungcancer" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Radiological Appearance of Common Lung Cancers</a>
             </div>
           </div>
         </div>
@@ -830,10 +790,10 @@
           <div class="section-content" id="feedback-content">
             <p>Do you agree with the AI prediction?</p>
             <div class="feedback-buttons">
-              <button class="feedback-btn confirm-btn">
+              <button class="feedback-btn confirm-btn" disabled>
                 <i class="fas fa-check"></i> Confirm Prediction
               </button>
-              <button class="feedback-btn dispute-btn">
+              <button class="feedback-btn dispute-btn" disabled>
                 <i class="fas fa-times"></i> Dispute Prediction
               </button>
             </div>
@@ -879,6 +839,15 @@
     const logoutBtn = document.getElementById("logoutBtn");
     const currentScanImage = document.getElementById("currentScanImage");
     const toggleButtons = document.querySelectorAll(".toggle-btn");
+    const confirmBtn = document.querySelector(".confirm-btn");
+    const disputeBtn = document.querySelector(".dispute-btn");
+    
+    // Define the mapping between prediction numbers and class names
+    const classMap = {
+      0: { name: "Normal", status: "status-normal", icon: "fa-check-circle", risk: "Low" },
+      1: { name: "Benign", status: "status-benign", icon: "fa-exclamation-circle", risk: "Moderate" },
+      2: { name: "Malignant", status: "status-malignant", icon: "fa-radiation", risk: "High" }
+    };
     
     // Handle section toggling
     toggleButtons.forEach(button => {
@@ -960,7 +929,7 @@
         return;
       }
       
-      uploadStatus.innerHTML = "<p>Uploading and predicting...</p>";
+      uploadStatus.innerHTML = "<p>Uploading and analyzing...</p>";
       
       const formData = new FormData();
       formData.append("file", file);
@@ -985,7 +954,11 @@
         // Add to audit log
         addAuditLogEntry(file.name, data);
         
-        uploadStatus.innerHTML = "<p style='color: green;'>Image processed successfully!</p>";
+        // Enable feedback buttons
+        confirmBtn.disabled = false;
+        disputeBtn.disabled = false;
+        
+        uploadStatus.innerHTML = "<p style='color: green;'>Image analyzed successfully!</p>";
       } catch (error) {
         uploadStatus.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
       }
@@ -993,57 +966,61 @@
     
     // Function to update prediction display
     function updatePredictionDisplay(data) {
-      const predictionResult = document.getElementById("predictionResult");
+      const predictionStatus = document.querySelector(".prediction-status");
       const confidenceBars = document.querySelector(".confidence-bars");
+      const aiInsights = document.getElementById("aiInsights");
       
-      // Determine prediction class and status
-      let predictionClass = "";
-      let statusClass = "";
-      let statusIcon = "";
-      let riskLevel = "";
+      // Get the predicted class (0, 1, or 2)
+      const predictedClass = data.prediction;
       
-      // This is just a sample implementation - adjust based on your backend response structure
-      if (data.prediction === "Normal") {
-        predictionClass = "Normal Tissue (Class 0)";
-        statusClass = "status-normal";
-        statusIcon = "fa-check-circle";
-        riskLevel = "Low";
-      } else if (data.prediction === "Suspicious") {
-        predictionClass = "Suspicious Nodule (Class 1)";
-        statusClass = "status-suspicious";
-        statusIcon = "fa-exclamation-triangle";
-        riskLevel = "Moderate";
-      } else {
-        predictionClass = "Malignant Mass (Class 2)";
-        statusClass = "status-high-risk";
-        statusIcon = "fa-radiation";
-        riskLevel = "High";
-      }
+      // Map the prediction to our classes (Normal, Benign, Malignant)
+      const classInfo = classMap[predictedClass];
       
       // Update the prediction status UI
-      const predictionStatus = document.querySelector(".prediction-status");
       predictionStatus.innerHTML = `
-        <i class="fas ${statusIcon} ${statusClass}"></i>
-        <span class="${statusClass}">${data.prediction}</span>
+        <i class="fas ${classInfo.icon} ${classInfo.status}"></i>
+        <span class="${classInfo.status}">${classInfo.name}</span>
       `;
+      
+      // Update classification text
+      document.getElementById("classificationResult").textContent = `${classInfo.name} (Class ${predictedClass})`;
+      document.getElementById("riskLevel").textContent = classInfo.risk;
+      
+      // Normalize confidence scores for display
+      // If the model returns logits or raw scores, convert them to probabilities
+      let confidenceScores = {};
+      
+      if (Array.isArray(data.confidence) && data.confidence.length > 0) {
+        // If confidence is a 2D array (batch predictions), take the first one
+        const scores = Array.isArray(data.confidence[0]) ? data.confidence[0] : data.confidence;
+        
+        // Convert scores to probabilities if they don't sum to 1
+        const sum = scores.reduce((a, b) => a + b, 0);
+        if (Math.abs(sum - 1) > 0.01) { // If not close to 1, apply softmax
+          const maxScore = Math.max(...scores);
+          const expScores = scores.map(s => Math.exp(s - maxScore)); // Subtract max for numerical stability
+          const expSum = expScores.reduce((a, b) => a + b, 0);
+          const probs = expScores.map(s => s / expSum);
+          
+          confidenceScores = {
+            "Normal": probs[0],
+            "Benign": probs[1],
+            "Malignant": probs[2]
+          };
+        } else {
+          confidenceScores = {
+            "Normal": scores[0],
+            "Benign": scores[1],
+            "Malignant": scores[2]
+          };
+        }
+      }
       
       // Update confidence bars
       let confidenceHTML = "";
-      
-      // Sample structure - adjust based on your backend response
-      const confidenceData = data.confidence || {
-        "Normal": 0.28,
-        "Suspicious": 0.62,
-        "Malignant": 0.1
-      };
-      
-      for (const [label, score] of Object.entries(confidenceData)) {
-        const percentage = (typeof score === 'number' ? score * 100 : parseFloat(score)).toFixed(0);
-        let riskClass = "";
-        
-        if (label === "Normal") riskClass = "low-risk";
-        else if (label === "Suspicious") riskClass = "medium-risk";
-        else riskClass = "high-risk";
+      for (const [label, score] of Object.entries(confidenceScores)) {
+        const percentage = (score * 100).toFixed(1);
+        const barClass = label.toLowerCase();
         
         confidenceHTML += `
           <div class="confidence-item">
@@ -1052,16 +1029,34 @@
               <span>${percentage}%</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill ${riskClass}" style="width: ${percentage}%"></div>
+              <div class="progress-fill ${barClass}" style="width: ${percentage}%"></div>
             </div>
           </div>
         `;
       }
       
-      // Update the HTML
-      document.getElementById("classificationResult").textContent = predictionClass;
-      document.getElementById("riskLevel").textContent = riskLevel;
       confidenceBars.innerHTML = confidenceHTML;
+      
+      // Update AI Insights based on predicted class
+      let insightsText = "";
+      if (predictedClass === 0) { // Normal
+        insightsText = `
+          <p><strong>AI Analysis:</strong> The model has classified this scan as normal lung tissue with ${(confidenceScores.Normal * 100).toFixed(1)}% confidence. No suspicious nodules or masses were detected.</p>
+          <p><strong>Considerations:</strong> Regular follow-up screening is recommended based on the patient's risk factors. The image shows normal lung parenchyma with no evidence of nodules, masses, or infiltrates.</p>
+        `;
+      } else if (predictedClass === 1) { // Benign
+        insightsText = `
+          <p><strong>AI Analysis:</strong> The model has detected a likely benign nodule with ${(confidenceScores.Benign * 100).toFixed(1)}% confidence. The nodule appears to have regular borders and homogeneous density.</p>
+          <p><strong>Considerations:</strong> While likely benign, follow-up imaging in 3-6 months is recommended to ensure stability. Consider patient's risk factors including smoking history, age, and family history of lung cancer.</p>
+        `;
+      } else { // Malignant
+        insightsText = `
+          <p><strong>AI Analysis:</strong> The model has detected a suspicious mass with characteristics of malignancy with ${(confidenceScores.Malignant * 100).toFixed(1)}% confidence. The mass shows irregular borders, heterogeneous density, and concerning location.</p>
+          <p><strong>Considerations:</strong> Immediate follow-up with a specialist is recommended. Consider additional imaging (PET/CT) and potential biopsy for definitive diagnosis. The size, location, and appearance are concerning for primary lung malignancy.</p>
+        `;
+      }
+      
+      aiInsights.innerHTML = insightsText;
     }
     
     // Function to add an entry to the audit log
@@ -1070,19 +1065,24 @@
       const now = new Date();
       const dateTimeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString();
       
-      // Calculate highest confidence value
-      let highestConfidence = 0;
-      if (data.confidence) {
-        const values = Object.values(data.confidence);
-        highestConfidence = Math.max(...values.map(v => typeof v === 'number' ? v : parseFloat(v)));
+      // Get the predicted class and confidence
+      const predictedClass = data.prediction;
+      const classInfo = classMap[predictedClass];
+      
+      // Calculate confidence percentage
+      let confidence = 0;
+      if (Array.isArray(data.confidence) && data.confidence.length > 0) {
+        // If confidence is a 2D array, take the first one
+        const scores = Array.isArray(data.confidence[0]) ? data.confidence[0] : data.confidence;
+        confidence = scores[predictedClass];
       }
       
       const newRow = document.createElement("tr");
       newRow.innerHTML = `
         <td>${dateTimeStr}</td>
         <td>${fileName}</td>
-        <td>${data.prediction}</td>
-        <td>${(highestConfidence * 100).toFixed(0)}%</td>
+        <td>${classInfo.name}</td>
+        <td>${(confidence * 100).toFixed(1)}%</td>
         <td>Pending</td>
       `;
       
@@ -1139,7 +1139,7 @@
     
     // Handle notifications
     document.querySelector(".notification-bell").addEventListener("click", () => {
-      alert("Notifications: \n- 2 new high-risk predictions need review\n- 1 specialist report received\n- System update scheduled for tonight");
+      alert("Notifications: \n- 2 new cases need review\n- 1 specialist report received\n- System update scheduled for tonight");
     });
     
     // Logout functionality
