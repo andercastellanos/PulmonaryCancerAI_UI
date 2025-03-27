@@ -420,6 +420,39 @@
       font-size: 16px;
       background-color: white;
     }
+
+    .modal-body {
+    max-height: 400px; /* Adjust this value based on your preference */
+    overflow-y: auto; /* Enables vertical scrolling if the content exceeds the height */
+}
+
+.action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+      margin-right: 5px;
+    }
+    
+    .edit-btn {
+      background: #FFC107;
+      color: #333;
+    }
+    
+    .edit-btn:hover {
+      background: #FFA000;
+    }
+    
+    .remove-btn {
+      background: #F44336;
+      color: white;
+    }
+    
+    .remove-btn:hover {
+      background: #D32F2F;
+    }
   </style>
 </head>
 <body>
@@ -441,60 +474,146 @@
       <!-- <button id="searchButton" class="search-button">Search</button> -->
       <button id="newPatientBtn" class="search-button">New Patient</button>
     </div>
-<!-- New Patient Modal -->
-<div class="modal" id="newPatientModal">
-  <div class="modal-content">
-      <div class="modal-header">
+   
+    <!-- New Patient Modal -->
+    <div class="modal" id="newPatientModal">
+      <div class="modal-content">
+        <div class="modal-header">
           <h2 class="modal-title">New Patient</h2>
           <span class="close-modal" id="closeNewPatientModal">&times;</span>
-      </div>
-      <div class="modal-body">
+        </div>
+        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
           <form id="newPatientForm">
-              <div class="form-group">
-                  <label for="patientName">Name</label>
-                  <input type="text" class="form-control" id="patientName" required>
-              </div>
-
-              <div class="form-group">
-                  <label for="patientAge">Age</label>
-                  <input type="number" class="form-control" id="patientAge" required>
-              </div>
-
-              <div class="form-group">
-                  <label for="patientGender">Gender</label>
-                  <select class="form-select" id="patientGender">
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                  </select>
-              </div>
-
-              <div class="form-group">
-                  <label for="patientDOB">Date of Birth</label>
-                  <input type="date" class="form-control" id="patientDOB" required>
-                  <small id="dobError" style="color: red; display: none;">Invalid date format. Please enter a valid date.</small>
-              </div>
-
-              <div class="form-group">
-                  <label for="patientContact">Contact</label>
-                  <input type="tel" class="form-control" id="patientContact" required>
-              </div>
-
-              <div class="form-group">
-                  <label for="patientNotes">Medical Notes</label>
-                  <textarea class="form-control" id="patientNotes"></textarea>
-              </div>
+            <div class="form-group">
+              <label for="patientName">Name:</label>
+              <input type="text" class="form-control" id="patientName" required>
+            </div>
+    
+            <div class="form-group">
+              <label for="patientAge">Age:</label>
+              <input type="number" class="form-control" id="patientAge" required>
+            </div>
+    
+            <div class="form-group">
+              <label for="patientGender">Gender:</label>
+              <select class="form-select" id="patientGender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+    
+            <div class="form-group">
+              <label for="patientDOB">Date of Birth:</label>
+              <input type="date" class="form-control" id="patientDOB" required>
+              <small id="dobError" style="color: red; display: none;">Invalid date format. Please enter a valid date.</small>
+            </div>
+    
+            <div class="form-group">
+              <label for="patientContact">Contact Information:</label>
+              <input type="tel" class="form-control" id="patientContact" placeholder="Email or Phone Number" required>
+            </div>
+    
+            <div class="form-group">
+              <label for="patientNotes">Medical Notes:</label>
+              <textarea class="form-control" id="patientNotes"></textarea>
+            </div>
+    
+            <div class="form-group">
+              <label for="patientFamilyHistory">Family History:</label>
+              <input type="text" class="form-control" id="patientFamilyHistory" placeholder="Enter family medical history...">
+            </div>
+    
+            <div class="form-group">
+              <label for="patientPreviousScans">Previous Scans:</label>
+              <input type="number" class="form-control" id="patientPreviousScans" required>
+            </div>
           </form>
-      </div>
-      <div class="modal-footer">
+        </div>
+        <div class="modal-footer">
           <button class="search-button" id="cancelNewPatientBtn">Cancel</button>
           <button class="search-button" id="savePatientBtn">Save Patient</button>
+        </div>
       </div>
+    </div>
+    
+   <!-- Edit Patient Modal -->
+<div id="editPatientModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Edit Patient</h2>
+      <span class="close-modal" id="closeEditPatientModal">&times;</span>
+    </div>
+    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+      <form id="editPatientForm">
+        <div class="form-group">
+          <label for="editPatientName">Name:</label>
+          <input type="text" class="form-control" id="editPatientName" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="editPatientAge">Age:</label>
+          <input type="number" class="form-control" id="editPatientAge" name="age" required />
+        </div>
+
+        <div class="form-group">
+          <label for="editPatientGender">Gender:</label>
+          <select class="form-select" id="editPatientGender" name="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editPatientDoB">Date of Birth:</label>
+          <input type="date" class="form-control" id="editPatientDoB" name="dob" required />
+        </div>
+
+        <div class="form-group">
+          <label for="editPatientContact">Contact Information:</label>
+          <input type="text" class="form-control" id="editPatientContact" name="contact" required />
+        </div>
+
+        <div class="form-group">
+          <label for="editPatientNotes">Medical Notes:</label>
+          <textarea class="form-control" id="editPatientNotes" name="notes"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="patientFamilyHistory">Family History:</label>
+          <textarea class="form-control" id="editPatientFamilyHistory"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="patientPreviousScans">Previous Scans:</label>
+          <input type="number" class="form-control" id="editPatientPreviousScans" required>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="search-button" id="cancelEditPatientBtn">Cancel</button>
+      <button class="search-button" id="editPatientSubmit">Save Changes</button>
+    </div>
   </div>
 </div>
 
 
-
+ <!-- Delete Confirmation Modal -->
+<div id="deleteConfirmationModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Delete Patient</h2>
+      <span class="close-modal" id="closeDeleteConfirmationModal">&times;</span>
+    </div>
+    <div class="modal-body" style="max-height: 200px; overflow-y: auto;">
+      <h3>Are you sure you want to delete this patient?</h3>
+    </div>
+    <div class="modal-footer">
+      <button class="search-button" id="cancelDeleteBtn">Cancel</button>
+      <button class="search-button" id="confirmDeleteBtn">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+    
         <script type="module" src="src/js/test.js"></script>
 
     
@@ -510,6 +629,7 @@
             <th>Gender</th>
             <th>Last Prediction</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -553,7 +673,7 @@
             <span id="selectedPatientDoB"></span>
           </div>
           <div class="patient-info-item">
-            <span class="patient-info-label">Contact:</span>
+            <span class="patient-info-label">Contact Information:</span>
             <span id="selectedPatientContact"></span>
           </div>
         </div>
@@ -562,6 +682,7 @@
           <span class="medical-notes-label">Medical Notes:</span>
           <span id="selectedMedicalNotes"></span>
         </div>
+        
 
         <script type="module" src="src/js/newpatient.js"></script>
 
@@ -620,205 +741,5 @@
     </div>
   </div>
   
-  <script>
-    // DOM elements
-    const searchInput = document.getElementById('searchInput');
-    // const searchButton = document.getElementById('searchButton');
-    const patientTable = document.getElementById('patientTable');
-    const patientRows = patientTable.querySelectorAll('tbody tr');
-    const exportButton = document.getElementById('exportButton');
-    
-    // Patient data (would come from backend in real app)
-    const patients = [
-      {
-        id: "123456",
-        name: "John Doe",
-        age: 55,
-        gender: "Male",
-        dob: "05/12/1970",
-        contact: "(555) 123-4567",
-        medicalNotes: "Smoker (30 pack-years), family history of lung cancer (father), hypertension, COPD diagnosis in 2022.",
-        lastPrediction: "2025-03-15",
-        status: "investigate",
-        predictions: [
-          { date: "2025-03-15", status: "investigate", confidence: 87 },
-          { date: "2025-01-10", status: "normal", confidence: 92 },
-          { date: "2024-12-05", status: "normal", confidence: 95 }
-        ]
-      },
-      {
-        id: "234567",
-        name: "Jane Smith",
-        age: 47,
-        gender: "Female",
-        dob: "08/23/1978",
-        contact: "(555) 234-5678",
-        medicalNotes: "Non-smoker, no family history of cancer, asthma since childhood.",
-        lastPrediction: "2025-03-10",
-        status: "normal",
-        predictions: [
-          { date: "2025-03-10", status: "normal", confidence: 96 },
-          { date: "2024-12-15", status: "normal", confidence: 97 }
-        ]
-      },
-      {
-        id: "345678",
-        name: "Carlos Ruiz",
-        age: 62,
-        gender: "Male",
-        dob: "11/05/1963",
-        contact: "(555) 345-6789",
-        medicalNotes: "Former smoker (quit 5 years ago, 20 pack-years), diabetes type 2, recent pneumonia (Jan 2025).",
-        lastPrediction: "2025-02-28",
-        status: "investigate",
-        predictions: [
-          { date: "2025-02-28", status: "investigate", confidence: 82 },
-          { date: "2025-01-05", status: "investigate", confidence: 78 },
-          { date: "2024-11-20", status: "normal", confidence: 91 }
-        ]
-      },
-      {
-        id: "456789",
-        name: "Sarah Johnson",
-        age: 58,
-        gender: "Female",
-        dob: "03/17/1967",
-        contact: "(555) 456-7890",
-        medicalNotes: "Non-smoker, family history of breast cancer (mother), hypertension, annual check-ups since 2020.",
-        lastPrediction: "2025-03-05",
-        status: "normal",
-        predictions: [
-          { date: "2025-03-05", status: "normal", confidence: 94 },
-          { date: "2024-09-22", status: "normal", confidence: 96 }
-        ]
-      },
-      {
-        id: "567890",
-        name: "Michael Wong",
-        age: 71,
-        gender: "Male",
-        dob: "06/30/1954",
-        contact: "(555) 567-8901",
-        medicalNotes: "Heavy smoker (45 pack-years), occupational exposure to asbestos (1975-1990), COPD, previous lung nodule detected in 2023.",
-        lastPrediction: "2025-03-12",
-        status: "critical",
-        predictions: [
-          { date: "2025-03-12", status: "critical", confidence: 89 },
-          { date: "2025-02-01", status: "investigate", confidence: 76 },
-          { date: "2024-12-18", status: "investigate", confidence: 72 }
-        ]
-      }
-    ];
-    
-    // Function to update patient details
-    function updatePatientDetails(patientId) {
-      const patient = patients.find(p => p.id === patientId);
-      if (!patient) return;
-      
-      // Update basic info
-      document.getElementById('patientName').textContent = patient.name;
-      document.getElementById('patientAge').textContent = patient.age;
-      document.getElementById('patientGender').textContent = patient.gender;
-      document.getElementById('patientDob').textContent = patient.dob;
-      document.getElementById('patientContact').textContent = patient.contact;
-      document.getElementById('medicalNotes').textContent = patient.medicalNotes;
-      
-      // Update prediction history
-      const predictionTable = document.getElementById('predictionTable');
-      const predictionTbody = predictionTable.querySelector('tbody');
-      predictionTbody.innerHTML = '';
-      
-      patient.predictions.forEach(prediction => {
-        const row = document.createElement('tr');
-        let statusClass = '';
-        let statusIcon = '';
-        let statusText = '';
-        
-        if (prediction.status === 'normal') {
-          statusClass = 'status-normal';
-          statusIcon = 'fa-check-circle';
-          statusText = 'Normal';
-        } else if (prediction.status === 'investigate') {
-          statusClass = 'status-investigate';
-          statusIcon = 'fa-exclamation-triangle';
-          statusText = 'Investigate';
-        } else if (prediction.status === 'critical') {
-          statusClass = 'status-critical';
-          statusIcon = 'fa-radiation';
-          statusText = 'Critical';
-        }
-        
-        row.innerHTML = `
-          <td>${prediction.date}</td>
-          <td>
-            <span class="${statusClass}">
-              <i class="fas ${statusIcon}"></i> ${statusText}
-            </span>
-          </td>
-          <td>${prediction.confidence}%</td>
-        `;
-        
-        predictionTbody.appendChild(row);
-      });
-    }
-    
-    // Add click event to patient rows
-    patientRows.forEach(row => {
-      row.addEventListener('click', function() {
-        // Remove selected class from all rows
-        patientRows.forEach(r => r.classList.remove('selected'));
-        
-        // Add selected class to clicked row
-        this.classList.add('selected');
-        
-        // Update patient details
-        const patientId = this.getAttribute('data-id');
-        updatePatientDetails(patientId);
-      });
-    });
-    
-    // Search functionality
-    // searchButton.addEventListener('click', function() {
-    //   const searchTerm = searchInput.value.toLowerCase();
-      
-    //   if (!searchTerm) {
-    //     // Show all rows if search is empty
-    //     patientRows.forEach(row => {
-    //       row.style.display = '';
-    //     });
-    //     return;
-    //   }
-      
-      patientRows.forEach(row => {
-        const patientId = row.querySelector('td:first-child').textContent;
-        const patientName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        const status = row.querySelector('td:last-child').textContent.toLowerCase();
-        
-        if (patientId.includes(searchTerm) || patientName.includes(searchTerm) || status.includes(searchTerm)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    // });
-    
-    // Search on enter key
-    // searchInput.addEventListener('keyup', function(event) {
-    //   if (event.key === 'Enter') {
-    //     searchButton.click();
-    //   }
-    // });
-    
-    // Export button
-    exportButton.addEventListener('click', function() {
-      const selectedRow = patientTable.querySelector('tr.selected');
-      if (!selectedRow) return;
-      
-      const patientId = selectedRow.getAttribute('data-id');
-      const patientName = selectedRow.querySelector('td:nth-child(2)').textContent;
-      
-      alert(`Exporting PDF report for patient: ${patientName} (ID: ${patientId})\nThis would generate a comprehensive PDF report in a real application.`);
-    });
-  </script>
 </body>
 </html>

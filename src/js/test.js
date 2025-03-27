@@ -14,10 +14,12 @@ const savePatientBtn = document.getElementById("savePatientBtn");
 const clearForm = () => {
     document.getElementById("patientName").value = "";
     document.getElementById("patientAge").value = "";
-    document.getElementById("patientGender").value = "";
+    document.getElementById("patientGender").value = "Male";  // Default value for gender
     document.getElementById("patientDOB").value = "";
     document.getElementById("patientContact").value = "";
     document.getElementById("patientNotes").value = "";
+    document.getElementById("patientFamilyHistory").value = "";
+    document.getElementById("patientPreviousScans").value = "";
 };
 
 // Open modal
@@ -96,6 +98,7 @@ savePatientBtn.addEventListener("click", async () => {
                 await setDoc(counterDocRef, { value: newPatientId });
             }
 
+            // Collect the form data
             const patientData = {
                 id: newPatientId.toString(), // Use the incremented ID as a string
                 name: document.getElementById("patientName").value,
@@ -103,7 +106,9 @@ savePatientBtn.addEventListener("click", async () => {
                 gender: document.getElementById("patientGender").value,
                 dob: document.getElementById("patientDOB").value,
                 contact: document.getElementById("patientContact").value,
-                notes: document.getElementById("patientNotes").value
+                notes: document.getElementById("patientNotes").value,
+                familyHistory: document.getElementById("patientFamilyHistory").value,
+                previousScans: document.getElementById("patientPreviousScans").value
             };
 
             // Save the patient data with the new ID
@@ -116,7 +121,7 @@ savePatientBtn.addEventListener("click", async () => {
             // Close the modal after saving
             newPatientModal.style.display = "none";
 
-            // Refresh the page after adding the patient
+            // Reload the page after saving
             location.reload(); // This will reload the page to reflect the updated data
 
         } catch (error) {
