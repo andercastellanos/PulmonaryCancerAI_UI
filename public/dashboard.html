@@ -633,8 +633,6 @@
         </div>
       </div>
       
-      <script type="module" src="src/js/patientDetails.js"></script>
-
       <!-- Main panel with all feature sections -->
       <div class="main-panel">
         <!-- Upload section -->
@@ -662,7 +660,7 @@
           <div class="section-content" id="results-content">
             <div class="prediction-status">
               <i class="fas fa-question-circle"></i>
-              <span>Awaiting Analysis</span>
+              <span class="status-text">Awaiting Analysis</span>
             </div>
             <div id="predictionResult">
               <p><strong>Predicted Classification:</strong> <span id="classificationResult">Not yet analyzed</span></p>
@@ -742,7 +740,7 @@
             <table class="audit-table">
               <thead>
                 <tr>
-                  <th>Date & Time</th>
+                  <th>Date</th>
                   <th>Image</th>
                   <th>Prediction</th>
                   <th>Confidence</th>
@@ -916,53 +914,69 @@
       
       const reader = new FileReader();
       reader.onload = function(e) {
+        // Clear the previous image before displaying the new one
+        currentScanImage.innerHTML = '';
+
+        // Display the new image
         currentScanImage.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; border-radius: 6px;">`;
       };
       reader.readAsDataURL(file);
     }
     
     // Handle image upload and prediction
-    uploadBtn.addEventListener("click", async () => {
-      const file = imageInput.files[0];
-      if (!file) {
-        alert("Please select an image file.");
-        return;
-      }
-      
-      uploadStatus.innerHTML = "<p>Uploading and analyzing...</p>";
-      
-      const formData = new FormData();
-      formData.append("file", file);
-      
-      try {
-        const response = await fetch("http://localhost:3000/predict", {
-          method: "POST",
-          body: formData
-        });
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          uploadStatus.innerHTML = `<p style="color: red;">Error: ${errorData.message}</p>`;
-          return;
-        }
-        
-        const data = await response.json();
-        
-        // Update prediction display
-        updatePredictionDisplay(data);
-        
-        // Add to audit log
-        addAuditLogEntry(file.name, data);
-        
-        // Enable feedback buttons
-        confirmBtn.disabled = false;
-        disputeBtn.disabled = false;
-        
-        uploadStatus.innerHTML = "<p style='color: green;'>Image analyzed successfully!</p>";
-      } catch (error) {
-        uploadStatus.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-      }
+    // Handle image upload and prediction
+uploadBtn.addEventListener("click", async () => {
+  const file = imageInput.files[0];
+  if (!file) {
+    alert("Please select an image file.");
+    return;
+  }
+
+  uploadStatus.innerHTML = "<p>Uploading and analyzing...</p>";
+  
+  const formData = new FormData();
+  formData.append("file", file);
+  
+  try {
+    const response = await fetch("http://localhost:3000/predict", {
+      method: "POST",
+      body: formData
     });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      uploadStatus.innerHTML = `<p style="color: red;">Error: ${errorData.message}</p>`;
+      return;
+    }
+    
+    const data = await response.json();
+
+    // If there is a current scan, move it to the previous scan section
+    const currentScan = document.getElementById("currentScanImage").querySelector("img");
+    if (currentScan) {
+      const previousScanImage = document.getElementById("previousScanImage");
+      previousScanImage.innerHTML = `<img src="${currentScan.src}" style="max-width: 100%; max-height: 200px; border-radius: 6px;">`;
+    }
+
+    // Display the new image as the current scan
+    displayImagePreview(file);
+
+    // Update prediction display
+    updatePredictionDisplay(data);
+
+    // Add to audit log
+    addAuditLogEntry(file.name, data);
+
+    // Enable feedback buttons
+    confirmBtn.disabled = false;
+    disputeBtn.disabled = false;
+
+    uploadStatus.innerHTML = "<p style='color: green;'>Image analyzed successfully!</p>";
+  } catch (error) {
+    uploadStatus.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+  }
+});
+
     
     // Function to update prediction display
     function updatePredictionDisplay(data) {
@@ -1063,11 +1077,13 @@
     function addAuditLogEntry(fileName, data) {
       const auditLogs = document.getElementById("auditLogs");
       const now = new Date();
-      const dateTimeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+      const dateTimeStr = now.toLocaleDateString() 
       
       // Get the predicted class and confidence
       const predictedClass = data.prediction;
       const classInfo = classMap[predictedClass];
+
+      localStorage.setItem("predictedClass", classInfo.name);
       
       // Calculate confidence percentage
       let confidence = 0;
@@ -1164,5 +1180,9 @@
   
   <!-- Import JavaScript modules -->
   <script type="module" src="/src/js/firebaseConfig.js"></script>
+  <script type="module" src="src/js/patientDetails.js"></script>
+
+
+
 </body>
 </html>

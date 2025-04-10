@@ -52,6 +52,8 @@ const displayPatients = () => {
     const row = document.createElement('tr');
     row.setAttribute('data-id', patient.id);
 
+    const { icon, colorClass } = getStatusIcon(patient.status);
+
     row.innerHTML = `
       <td>${patient.id}</td>
       <td>${patient.name}</td>
@@ -59,8 +61,8 @@ const displayPatients = () => {
       <td>${patient.gender}</td>
       <td>${patient.lastPrediction || 'N/A'}</td>
       <td>
-        <span class="status-${patient.status ? patient.status.toLowerCase() : 'unknown'}">
-          <i class="fas ${getStatusIcon(patient.status)}"></i>
+        <span class="status ${colorClass}">
+          <i class="fas ${icon}"></i>
           ${patient.status || 'Unknown'}
         </span>
       </td>
@@ -94,12 +96,18 @@ const displayPatients = () => {
   });
 };
 
-// Get status icon class
+// Get status icon class and color class
 const getStatusIcon = (status) => {
-  if (status === 'Normal') return 'fa-check-circle'; // Green check icon
-  if (status === 'Investigate') return 'fa-exclamation-triangle'; // Yellow exclamation icon
-  if (status === 'Malignant') return 'fa-radiation'; // Red radiation icon for Malignant
-  return 'fa-question'; // Default icon for 'Unknown' (question mark)
+  if (status && status.toLowerCase() === 'normal') {
+    return { icon: 'fa-check-circle', colorClass: 'status-normal' }; // Green check icon for normal
+  }
+  if (status && status.toLowerCase() === 'benign') {
+    return { icon: 'fa-exclamation-triangle', colorClass: 'status-investigate' }; // Orange exclamation icon for investigate
+  }
+  if (status && status.toLowerCase() === 'malignant') {
+    return { icon: 'fa-radiation', colorClass: 'status-malignant' }; // Red radiation icon for malignant
+  }
+  return { icon: 'fa-question', colorClass: 'status-unknown' }; // Default icon for 'Unknown'
 };
 
 // Update pagination buttons
@@ -116,7 +124,7 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     patient.id.toLowerCase().includes(searchTerm) ||
     (patient.status ? patient.status.toLowerCase() : '').includes(searchTerm) ||
     (patient.age ? patient.age.toString().includes(searchTerm) : false) ||
-    (patient.gender ? patient.gender.toLowerCase().includes(searchTerm) : false)
+    (patient.gender ? patient.gender.toLowerCase() : '').includes(searchTerm)
   );
 
   currentPage = 1; // Reset to first page when searching
@@ -155,6 +163,7 @@ const selectPatient = (patient) => {
   document.getElementById('selectedMedicalNotes').textContent = patient.notes || 'No medical notes available.';
 };
 
+
 // Open Edit Patient Modal
 const openEditPatientModal = (patient) => {
   document.getElementById('editPatientName').value = patient.name;
@@ -165,6 +174,8 @@ const openEditPatientModal = (patient) => {
   document.getElementById('editPatientNotes').value = patient.notes || '';
   document.getElementById('editPatientFamilyHistory').value = patient.familyHistory || ''; // Ensure this is being set
   document.getElementById('editPatientPreviousScans').value = patient.previousScans || ''; // Ensure this is being set
+  document.getElementById('editPatientStatus').value = patient.status || ''; 
+
 
   // Show the modal
   document.getElementById('editPatientModal').style.display = 'block';
@@ -183,6 +194,10 @@ const savePatientChanges = async (patientId) => {
   const notes = document.getElementById('editPatientNotes').value;
   const familyHistory = document.getElementById('editPatientFamilyHistory').value;
   const previousScans = document.getElementById('editPatientPreviousScans').value;
+  const status = document.getElementById('editPatientStatus').value;
+
+  let lastPrediction = new Date().toLocaleString();
+
 
   try {
     const patientRef = doc(db, "users", auth.currentUser.uid, "patients", patientId);
@@ -194,11 +209,17 @@ const savePatientChanges = async (patientId) => {
       contact,
       notes,
       familyHistory,
-      previousScans
+      previousScans,
+      status,
+      lastPrediction,
     });
     alert('Patient information updated successfully');
+    
+    // Clear selected patient information from localStorage
+    localStorage.removeItem('selectedPatient');
+    
     closeEditPatientModal();
-   location.reload(); // Reloads the page to reflect the changes
+    location.reload(); // Reloads the page to reflect the changes
     fetchPatients(auth.currentUser.uid); // Refresh the patient list
   } catch (error) {
     console.error("Error updating patient:", error);
@@ -247,3 +268,4 @@ document.getElementById('cancelEditPatientBtn').onclick = () => {
 document.getElementById('cancelDeleteBtn').onclick = () => {
   closeDeleteConfirmationModal();
 };
+

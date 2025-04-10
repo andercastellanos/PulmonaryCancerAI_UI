@@ -108,7 +108,9 @@ savePatientBtn.addEventListener("click", async () => {
                 contact: document.getElementById("patientContact").value,
                 notes: document.getElementById("patientNotes").value,
                 familyHistory: document.getElementById("patientFamilyHistory").value,
-                previousScans: document.getElementById("patientPreviousScans").value
+                previousScans: document.getElementById("patientPreviousScans").value,
+                status: "", 
+                lastPrediction: "" 
             };
 
             // Save the patient data with the new ID

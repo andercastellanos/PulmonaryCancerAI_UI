@@ -145,26 +145,30 @@
       border-left: 4px solid #1976D2;
     }
     
-    .status-normal {
-      color: #4caf50;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .status-investigate {
-      color: #ff9800;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .status-critical {
-      color: #f44336;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+    /* Green for Normal */
+  .status-normal {
+    color: green;
+  }
+
+  /* Yellow for Investigate */
+  .status-investigate {
+    color: orange;
+  }
+
+  /* Red for Malignant */
+  .status-malignant {
+    color: red;
+  }
+
+  /* Gray for Unknown */
+  .status-unknown {
+    color: black;
+  }
+
+  /* Additional styles for icons, if needed */
+  .status i {
+    margin-right: 5px;
+  }
     
     /* Pagination */
     .pagination {
@@ -537,7 +541,7 @@
       </div>
     </div>
     
-   <!-- Edit Patient Modal -->
+<!-- Edit Patient Modal -->
 <div id="editPatientModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -579,14 +583,26 @@
           <label for="editPatientNotes">Medical Notes:</label>
           <textarea class="form-control" id="editPatientNotes" name="notes"></textarea>
         </div>
+        
         <div class="form-group">
-          <label for="patientFamilyHistory">Family History:</label>
-          <textarea class="form-control" id="editPatientFamilyHistory"></textarea>
+          <label for="editPatientFamilyHistory">Family History:</label>
+          <textarea class="form-control" id="editPatientFamilyHistory" name="familyHistory"></textarea>
         </div>
+
         <div class="form-group">
-          <label for="patientPreviousScans">Previous Scans:</label>
-          <input type="number" class="form-control" id="editPatientPreviousScans" required>
+          <label for="editPatientPreviousScans">Previous Scans:</label>
+          <input type="number" class="form-control" id="editPatientPreviousScans" name="previousScans" required />
         </div>
+
+        <div class="form-group">
+          <label for="editPatientStatus">Status:</label>
+          <select class="form-select" id="editPatientStatus" name="status">
+            <option value="Normal">Normal</option>
+            <option value="Benign">Benign</option>
+            <option value="Malignant">Malignant</option>
+          </select>
+        </div>
+        
       </form>
     </div>
     <div class="modal-footer">
@@ -595,6 +611,7 @@
     </div>
   </div>
 </div>
+
 
 
  <!-- Delete Confirmation Modal -->
@@ -614,7 +631,7 @@
   </div>
 </div>
     
-        <script type="module" src="src/js/test.js"></script>
+        <script type="module" src="src/js/addingPatient.js"></script>
 
     
     <!-- Patient list -->
@@ -741,5 +758,7 @@
     </div>
   </div>
   
+  <script type="module" src="src/js/updatePrediction.js"></script>
+
 </body>
 </html>
